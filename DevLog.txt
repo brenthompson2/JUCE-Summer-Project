@@ -1,0 +1,57 @@
+Brendan Thompson
+Development Log
+
+
+6/14/17:
+  - Created Github Repository. 
+  - Just Starting Info: http://www.kvraudio.com/forum/viewtopic.php?t=329696
+    - Areas of Exploration:
+      - Audio Basics
+      - Programming
+      - Maths
+      - Digital Signal Processing (DSP)
+        - dspguide.com
+      - Audio DSP
+    - Enviornments:
+      - SynthEdit
+      - SynthMaker
+      - Reaktor
+      - Max/MSP
+      - PureData
+      - CSound
+      - SuperCollider
+      - Bidule
+      - Usine 
+    - Frameworks:
+      - JUCE
+      - IPlug
+      - Cockos
+      - VST.NET
+      - Delphi ASIO and VST
+  - More Starting Info: http://www.soundonsound.com/techniques/vst-diy
+    1) "SaveAs" Programs 
+      (editing and playing = two different activities) 
+      (Virtual Processing modules joined on screen with virtual patch cables)
+      - SynthEdit by Jeff McClintock
+      - SynthMaker by Outsim
+      ("Plug‑in authors who use them are dependent on the developers of the software in terms of the code 
+      framework — the exported plug‑ins are really just a bundled‑up 'runtime' and preset in a VST wrapper —
+      so if there's ever a problem that requires technical support, there are some very real limitations 
+      to what the plug‑in author can address on their own")
+    2) Cockos Reaper + JS Language
+      ("Basically, JS takes care of all the basic audio and user‑interface stuff for you, freeing you to 
+      concentrate on writing your audio and MIDI processing in what they describe as a "C‑like language”, 
+      without having to do the grunt‑work of getting it to interface with your host and its plug‑in architecture.")
+    
+ 
+ - Researching different development methods:
+      - JUCE: http://www.olilarkin.co.uk/html/ftv2blank.png
+          - Free personal version
+          - https://www.youtube.com/watch?v=3Pm-WP4fv0k
+      - C++ and WDL-OL Library ("Whittle") and IPlug     ****Favorite So Far***
+          - http://www.martin-finke.de/blog/articles/audio-plugins-001-introduction/
+          - Windows Machine + Visual Studio 2010 or later
+      - Need software to test-host VST2 and VST3 plugins https://www.youtube.com/watch?v=uWitp7EOWVA
+        - VSTHost for VST2 and Steinberg VST Test Host for VST3
+     - Comparisons:
+        - https://www.kvraudio.com/forum/viewtopic.php?p=6760826 (WDL-OL Wins)
