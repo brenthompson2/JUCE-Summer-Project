@@ -3,9 +3,11 @@ Development Log
 
 
 6/14/17:
-  - Created Github Repository. 
+  - Created Github Repository
+  
   - Just Starting Info: http://www.kvraudio.com/forum/viewtopic.php?t=329696
     - Areas of Exploration:
+      - Self-Teaching Advanced Topics
       - Audio Basics
       - Programming
       - Maths
@@ -28,6 +30,7 @@ Development Log
       - Cockos
       - VST.NET
       - Delphi ASIO and VST
+      
   - More Starting Info: http://www.soundonsound.com/techniques/vst-diy
     1) "SaveAs" Programs 
       (editing and playing = two different activities) 
@@ -42,16 +45,26 @@ Development Log
       ("Basically, JS takes care of all the basic audio and user‑interface stuff for you, freeing you to 
       concentrate on writing your audio and MIDI processing in what they describe as a "C‑like language”, 
       without having to do the grunt‑work of getting it to interface with your host and its plug‑in architecture.")
-    
- 
+      
  - Researching different development methods:
       - JUCE: http://www.olilarkin.co.uk/html/ftv2blank.png
           - Free personal version
           - https://www.youtube.com/watch?v=3Pm-WP4fv0k
-      - C++ and WDL-OL Library ("Whittle") and IPlug     ****Favorite So Far***
+      - *** C++ and WDL-OL Library ("Whittle") and IPlug     ****Favorite So Far***
           - http://www.martin-finke.de/blog/articles/audio-plugins-001-introduction/
           - Windows Machine + Visual Studio 2010 or later
       - Need software to test-host VST2 and VST3 plugins https://www.youtube.com/watch?v=uWitp7EOWVA
         - VSTHost for VST2 and Steinberg VST Test Host for VST3
-     - Comparisons:
+      - Comparisons:
         - https://www.kvraudio.com/forum/viewtopic.php?p=6760826 (WDL-OL Wins)
+   
+   - Books:
+        - *** "Designing Software Synthesizer Plug-Ins in C++: For RackAFX, VST3, and Audio Units" by Will Pirkle 
+          https://www.amazon.com/Designing-Software-Synthesizer-Plug-Ins-RackAFX/dp/1138787078/ref=cm_wl_huc_item
+        - "BasicSynth" by Daniel Mitchell https://www.amazon.com/BasicSynth-Daniel-Mitchell/dp/0557022126/ref=pd_rhf_p_t_1
+  
+     Thoughts:
+      - Need to Download all necessary software
+      - Hardest Parts are going to be getting the software setup, finding useful tutorials, and learning Digital Signal Processing
+      - Books seem like the most help when it comes to actual synth contstruction
+      - WDL and IPlug seem like what I want to use but are lacking in online resources.
