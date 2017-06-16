@@ -1,4 +1,4 @@
-Brendan Thompson
+﻿Brendan Thompson
 Development Log
 
 06/14/17:
@@ -91,6 +91,7 @@ Development Log
 -------------------------------------------------
 06/16/17
 
+- Tested Pushing Ability
 - Setup Part 2: Installing and setting up the WDL-OL Library
   - http://www.martin-finke.de/blog/articles/audio-plugins-002-setting-up-wdl-ol/
 
