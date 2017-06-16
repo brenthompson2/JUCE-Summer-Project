@@ -1,8 +1,7 @@
 Brendan Thompson
 Development Log
 
-
-6/14/17:
+06/14/17:
   - Created Github Repository
   
   - Just Starting Info: http://www.kvraudio.com/forum/viewtopic.php?t=329696
@@ -68,3 +67,47 @@ Development Log
       - Hardest Parts are going to be getting the software setup, finding useful tutorials, and learning Digital Signal Processing
       - Books seem like the most help when it comes to actual synth contstruction
       - WDL and IPlug seem like what I want to use but are lacking in online resources.
+
+
+--------------------------------------------
+
+06/15/17 11:30pm
+
+- I am going to begin the project by following this Martin Finkle article:
+    http://www.martin-finke.de/blog/articles/audio-plugins-001-introduction/
+    
+- Setup Part 1: Accessing the repository from the windows terminal
+    A) Installing Git:
+          - https://www.youtube.com/watch?v=albr1o7Z1nw
+    B) Cloneing the repository onto my machine:
+      - https://help.github.com/articles/cloning-a-repository/
+        - Use most linux like options during installation
+        - git config --global user.name "Brendan Thompson"
+        - git config --global user.email "brenthompson2@gmail.com"
+        - git config --global core.editor notepad   // Sets default editor to notepad. 
+            *** I didn't do this ***
+        - git config --list // Lists possible things to configure
+        
+-------------------------------------------------
+06/16/17
+
+- Setup Part 2: Installing and setting up the WDL-OL Library
+  - http://www.martin-finke.de/blog/articles/audio-plugins-002-setting-up-wdl-ol/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
