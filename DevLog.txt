@@ -8,7 +8,8 @@ This is the Development Log of my VST design process. I have been writing in it 
 	- What is wrong with my Visual Studio?
 	- What is IMutexLock protecting and why do we change it in Reset()?
 	- What are Chunks for?
-	- Do I have to use parameters instead of variables always or just for variables directly linked with GUI values?
+	- Do I only have to use parameters instead of variables for values directly linked with GUI values?
+
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
@@ -17,7 +18,46 @@ This is the Development Log of my VST design process. I have been writing in it 
 - Uninstall and Reinstall Visual Studio
 	- Didn't include any extensions or anything.
 	- Only 643MB or something like that
-
+	- Launched Properly
+	- Opened the .sln from Visual Studio and needed to install 10 extensions:
+		- Visual C++ Toolset, ATL, and optional features like MFC and C++/CLI
+		- Installed
+	- Launched IPlugEffect & Visual Studio by double clicking IPlugEffect.sln
+		- "One or more projects in the solution were not loaded correctly. Please see the Output Window for details"
+		- "The following projects use an earlier version of the Visual C++ platform toolset. You can upgrade your projects to target the latest Microsoft Visual Studio 2017 toolkit. You can also select the target Windows SDK version from those installed on your machine."
+			- Windows SDK Version: "10.0.15063.0" (no other options)
+			- Platform Toolset: "Upgrade to v141" (other option is "No Upgrade")
+			- 8 Extensions CheckBoxed
+			- I'm clicking OK...
+			- It looks like it loaded successfully!
+			- Console Output:
+				"Opening repositories:
+				D:\Brendan\Documents\2017 Summer Project\VST Synthesizer Design\wdl-ol
+				Unable to complete read operation after process has exited."
+- Project appears to be loaded into Visual Studio for the first time.
+	- IPlugEffect-app is bold
+	- Press f5 to load the project and...
+		- "These projects are out of date, would you like to build them?"
+			- lice - Debug Win32
+			- IPlug - Debug Win32
+			- IPlugEffect-app - Debug Win32
+			- Clicking Yes and...
+			- "There were build errors. Would you like to continue and run the last successful build?"
+				- Yes and...
+				- "Unable to start program ...\IPlugEffect.exe . The system cannot find the path specified"
+				- Sounds like it didn't compile
+				- 3 Errors!! "error Codes MSB8036: "The Windows SDK version 8.1 was not found. Install the required version of Windows SDK or change the SDK version in the project property pages or by right-clicking the solution and selecting "Retarget Solution""
+					- lice, IPlug, IPlugEffect-app
+- Correcting my version of Windows SDK... 
+	- Retraced steps of installing dependancies and all the files look correct.
+	- Researching Error...
+		- "Try installing the windows sdk 8.1 from: https://developer.microsoft.com/en-us/windows/downloads/windows-8-1-sdk"
+			- Windows Software Development Kit (SDK) for Windows 8.1
+			- Not Windows 10 compatable? 
+			- Im gonna look for a windows 10 version...
+			- 
+				
+------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
 06/16/17
@@ -38,23 +78,23 @@ This is the Development Log of my VST design process. I have been writing in it 
 		- git checkout 0a360c90b3460717210eeaee7464bc7009c9a5ba
 	C) Adding Dependencies
 		- "Setting up IPlug on Windows" youtube video by Oli Larkin
-		- Move VST2 files over 
+		- Move VST2 SDK files over 
 			- Need to download the VST3 SDK
 				- www.steinberg.net/en/company/developers.html
 				- Version: VST 3.6.7 Audio Plug-Ins SDK
-			- Files: aeffect.h & aeffectx.h
 			- Source: VST_SDK > VST2_SDK > plugininterfaces > vst2.x
+			- Files: aeffect.h & aeffectx.h
 			- Destination: wdl-ol > VST_SDK
-		- Move VST3 files over
-			- Files: everything. Carefull not to overwrite base > base_vc10.vcxproj
+		- Move VST3 SDK files over
 			- Source: VST_SDK > VST3_SDK
+			- Files: everything. Carefull not to overwrite base > base_vc10.vcxproj
 			- Destination: wdl-ol > VST3_SDK
 		- Move ASIO_SDK Files for standalone apps
 			- Need to download RtAudio's files
 				- www.music.mcgill.ca/~gary/rtaudio/
 				- Version: 4.1.2 (02/22/16)
-			- Files: all .cpp & .h
 			- Source: rtaudio-4.1.2 > include > (*cpp & *.h)
+			- Files: all .cpp & .h
 			- Destination: wdl-ol  > ASIO_SDK
 	D) Install Python to D drive
 		- https://www.python.org/getit/
@@ -225,8 +265,8 @@ This is the Development Log of my VST design process. I have been writing in it 
 	- I want to start making my own code (variable names, fn names, formating, comments, etc.)
 	- Parameters are most likely variables that are directly related to the GUI.
 
-
---------------------------------------------------
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 06/15/17
 
@@ -255,7 +295,8 @@ This is the Development Log of my VST design process. I have been writing in it 
 		- Undo Commit
 			- git reset HEAD^
         
--------------------------------------------------
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 06/14/17:
 	- Created Github Repository
