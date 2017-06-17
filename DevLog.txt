@@ -1,103 +1,330 @@
 ﻿Brendan Thompson
 Development Log
 
-06/14/17:
-  - Created Github Repository
-  
-  - Just Starting Info: http://www.kvraudio.com/forum/viewtopic.php?t=329696
-    - Areas of Exploration:
-      - Self-Teaching Advanced Topics
-      - Audio Basics
-      - Programming
-      - Maths
-      - Digital Signal Processing (DSP)
-        - dspguide.com
-      - Audio DSP
-    - Enviornments:
-      - SynthEdit
-      - SynthMaker
-      - Reaktor
-      - Max/MSP
-      - PureData
-      - CSound
-      - SuperCollider
-      - Bidule
-      - Usine 
-    - Frameworks:
-      - JUCE
-      - IPlug
-      - Cockos
-      - VST.NET
-      - Delphi ASIO and VST
-      
-  - More Starting Info: http://www.soundonsound.com/techniques/vst-diy
-    1) "SaveAs" Programs 
-      (editing and playing = two different activities) 
-      (Virtual Processing modules joined on screen with virtual patch cables)
-      - SynthEdit by Jeff McClintock
-      - SynthMaker by Outsim
-      ("Plug‑in authors who use them are dependent on the developers of the software in terms of the code 
-      framework — the exported plug‑ins are really just a bundled‑up 'runtime' and preset in a VST wrapper —
-      so if there's ever a problem that requires technical support, there are some very real limitations 
-      to what the plug‑in author can address on their own")
-    2) Cockos Reaper + JS Language
-      ("Basically, JS takes care of all the basic audio and user‑interface stuff for you, freeing you to 
-      concentrate on writing your audio and MIDI processing in what they describe as a "C‑like language”, 
-      without having to do the grunt‑work of getting it to interface with your host and its plug‑in architecture.")
-      
- - Researching different development methods:
-      - JUCE: http://www.olilarkin.co.uk/html/ftv2blank.png
-          - Free personal version
-          - https://www.youtube.com/watch?v=3Pm-WP4fv0k
-      - *** C++ and WDL-OL Library ("Whittle") and IPlug     ****Favorite So Far***
-          - http://www.martin-finke.de/blog/articles/audio-plugins-001-introduction/
-          - Windows Machine + Visual Studio 2010 or later
-      - Need software to test-host VST2 and VST3 plugins https://www.youtube.com/watch?v=uWitp7EOWVA
-        - VSTHost for VST2 and Steinberg VST Test Host for VST3
-      - Comparisons:
-        - https://www.kvraudio.com/forum/viewtopic.php?p=6760826 (WDL-OL Wins)
-   
-   - Books:
-        - *** "Designing Software Synthesizer Plug-Ins in C++: For RackAFX, VST3, and Audio Units" by Will Pirkle 
-          https://www.amazon.com/Designing-Software-Synthesizer-Plug-Ins-RackAFX/dp/1138787078/ref=cm_wl_huc_item
-        - "BasicSynth" by Daniel Mitchell https://www.amazon.com/BasicSynth-Daniel-Mitchell/dp/0557022126/ref=pd_rhf_p_t_1
-  
-     Thoughts:
-      - Need to Download all necessary software
-      - Hardest Parts are going to be getting the software setup, finding useful tutorials, and learning Digital Signal Processing
-      - Books seem like the most help when it comes to actual synth contstruction
-      - WDL and IPlug seem like what I want to use but are lacking in online resources.
+- Overview ---
+This is the Development Log of my VST design process. I have been writing in it quite extensively: taking notes on the different topics, describing just about every issue faced, and documenting pretty much all of the decisions made.
+
+- Unanswered Questions:
+	- What is wrong with my Visual Studio?
+	- What is IMutexLock protecting and why do we change it in Reset()?
+	- What are Chunks for?
+	- Do I have to use parameters instead of variables always or just for variables directly linked with GUI values?
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+06/17/17
+
+- Uninstall and Reinstall Visual Studio
+	- Didn't include any extensions or anything.
+	- Only 643MB or something like that
+
+------------------------------------------------------------------------------
+
+06/16/17
+
+- Tested Pushing Ability
+- Setup Part 2: Installing and setting up the necessary software
+	- http://www.martin-finke.de/blog/articles/audio-plugins-002-setting-up-wdl-ol/
+	A) Installing Visual Studio Community 2017 
+		- https://www.visualstudio.com/vs/community/
+		- I added all sorts of toolkits, extensions, and other Unity, Android, iOS, and .NET developer tools to my VS build
+			- Didn't realize I shoulda gotten the Python one
+			- 36GB installation...
+		- Something failed with setup. Still launched though
+		- More Problems later. See "G) Opening MyFirstPlugin Project"
+	B) Download Oli-Larkin's WDL-OL from github
+		- git clone https://github.com/olilarkin/wdl-ol
+		- cd wdl-ol
+		- git checkout 0a360c90b3460717210eeaee7464bc7009c9a5ba
+	C) Adding Dependencies
+		- "Setting up IPlug on Windows" youtube video by Oli Larkin
+		- Move VST2 files over 
+			- Need to download the VST3 SDK
+				- www.steinberg.net/en/company/developers.html
+				- Version: VST 3.6.7 Audio Plug-Ins SDK
+			- Files: aeffect.h & aeffectx.h
+			- Source: VST_SDK > VST2_SDK > plugininterfaces > vst2.x
+			- Destination: wdl-ol > VST_SDK
+		- Move VST3 files over
+			- Files: everything. Carefull not to overwrite base > base_vc10.vcxproj
+			- Source: VST_SDK > VST3_SDK
+			- Destination: wdl-ol > VST3_SDK
+		- Move ASIO_SDK Files for standalone apps
+			- Need to download RtAudio's files
+				- www.music.mcgill.ca/~gary/rtaudio/
+				- Version: 4.1.2 (02/22/16)
+			- Files: all .cpp & .h
+			- Source: rtaudio-4.1.2 > include > (*cpp & *.h)
+			- Destination: wdl-ol  > ASIO_SDK
+	D) Install Python to D drive
+		- https://www.python.org/getit/
+		- Version: 3.6
+		- Possibly downloaded 32 bit version
+		- Disabled ~220 Character limit on path length. Idk if that will be necessary at any point?
+	E) Create VST3 folder C > Program Files > Common Files > VST3 
+	F) Duplicate IPlug Project IPlugEffect to create MyFirstPlugin
+		- /c/Python27/python.exe duplicate.py IPlugEffect MyFirstPlugin BrendanThompson
+			- bash: /c/Python27/python.exe: No such file or directory
+				- need to find path to python
+				- C:\Users\Brendan\AppData\Local\Programs\Python\Python36-32\python.exe
+			- Error: file duplicate.py, Line 41. Missing Parenthesis in call to 'print'
+				- need to fix wdl-0l > IPlugExamples > duplicate.py
+				- print "" statement does not work in python 3
+				- print ("") is proper syntax
+			- Fixed every instance of print & script ran
+			- script failed to replace project name strings in new folder
+	G) Opening MyFirstPlugin project
+		- IPlugEffect is the .sln (duplicate.py script didnt rename files)
+		- When double-click -> Choose the application to open this file with: EMPTY
+		- Visual Studio no longer launching from start menu shortcut
+			- Possibly because I renamed the install folder
+			- Missing Shortcut devenv.exe
+			- Try opening -> Clicked "Fix it" -> said reinstall
+			- Try again -> click "Delete it" -> deleted shortcut
+			- Reopened Installer -> "Setup Completed With Failures" > Modify
+				- Modifications under original folder name:
+					- All 3 Windows ones
+					- Python
+					- Mobile Development with .NET, Unity, Mobile Development with C++
+					- Setup Operation Failed. Wont Launch from installer. Didnt create new Start Menu Shortcut				
+					
+- Learning Part 1: Analyzing the code of IPlugEffect.h, IPlugEffect.cpp, and resource.h (Summarized by Oli-Larking Presentation from Part 2)
+	- Martin-Finke #3, Examining the Code
+	- resource.h = Constants, Flags, and Images
+		- 1-26 = Name, Version, Unique ID (registering/cataloging plugins), etc.
+		- 56-60 = KNOB ID and Image
+			- #define KNOB_ID 101
+			- Image = sprite sheet of knob in all 60 different positions, 48x48
+		- 63-64 = Set Size of plugin window (300 x 300)
+			- #define GUI_WIDTH, GUI_HEIGHT
+	- IPlugEffect.h = Interface
+		- Constructor
+		- Destruction
+		- Member Functions
+			- Reset = called when sample rate is changed
+			- OnParamChange = when knob turned
+			- ProcessDoubleReplacing = core of plugin -> process incoming audio
+		- double mGain = main gain variable
+	- IPlugEffect.cpp = Implementation
+		- 8-12 = enum EParams = sets num parameters
+		- 14-22 = enum ELayout = sets position of knob & defines num frames
+		- 24-44 = Constructor()
+			- 30-31 = Set up Plug-in Attributes
+				- SetShape gives knob non-linear behavior
+			- 33 = creates graphic context with the right size
+			- 34 = sets background color
+			- 36 = load knob 
+			- 38 = creates new IKnobMultiControl (C++ class for GUI Knob)
+			- 40 = Attach Graphics
+			- 42-43 = Create Preset
+		- 46 = Destructor()
+		- 48-62 = ProcessDoubleReplacing() = core of plugin -> process incoming audio
+			- Audio Stream = sequence of doubles, each containing amplitude at a given time
+			- First Parameter = inputs
+			- Second Parameter = outputs
+			- Third Parameter = nFrames = samples per channel(60)
+			- 52-55 = set pointers to input and output buffers
+				- *in1 = left channel, *in2 = right channel
+			- 57-61 = iterate through buffers and process the audio 
+				- *out1 = *in1 * mGain;			
+		- 64-68 = Reset()
+		- 70-83 = OnParamChange() = when knob turned
+			- 72 = IMutexLock for "Thread Safety"
+			- rest = Switch for doing work regarding which parameter changed
+		
+- Learning Part 2: Oli Larkin further reading M4_u Convention IPlug Workshop Slides & Examples
+	- Life after Pluggo: Getting Started programming plugins in C++ using IPlug
+	- Same code as described by the Martin Finke article but summarized better
+	- Chunks?
+		- Necessary if plugin need to store arbitrary data in its state or presets. Otherwise each parameter value is a single floating point num
+	- Parameters:
+		- Each Parameter needs an index (starting at 0)
+		- Add Parameters in the constructor using GetParam(idx)
+		- EParams enum is used to enumerate the parameters and give them individual IDs (kGain)
+		- Four Types of IPlug Parameters:
+			A) Double, continuous parameter:
+				GetParam(index) -> InitDouble("name", defaultValue, minValue, maxValue, step, unitLabel);
+				GetParam(kGain) -> InitDouble("Gain", 50., 0., 100., 0.01, "%");
+			B) Enumerated List, discrete parameter:
+				GetParam(index) -> InitEnum("name", defaultValue, numItems);
+				GetParam(kMode) -> InitEnum("Mode", 0, 4);
+				GetParam(kMode) -> SetDisplayText(2, "a"); // set display text for third item to "c"
+			C) Boolean, discrete parameter:
+				GetParam(kEnable) ->InitBool("name", defaultValue);
+				GetParam(kEnable) ->InitBool("Enable", 0);
+			D) Integer, discreet parameter
+				GetParam(kCount) ->InitInt("name", defaultValue, minValue, maxValue, unitLabel);
+				GetParam(kCount) ->InitInt("Count", 50, 0, 100, "%");
+		- Handling Parameter Changes:
+			switch (paramIdx){
+				case kGain:
+					DBGMSG( "Value of gain: %f\n", GetParam(kGain)->Value());
+					break;
+				case kMode:
+					DBGMSG( "Value of mode: %i\n", GetParam(kMode)->Int());
+					break;
+				case kEnable:
+					DBGMSG( "Value of enable: %i\n", GetParam(kEnable)->Bool());
+					break;
+				case kCount:
+					DBGMSG( "Value of count: %i\n", GetParam(kCount)->Int());
+					break;
+				default:
+					break;
+			}
+	- IsInChannelConnected(ch) and IsOutChannelConnected(ch) to find out channel config
+	- Handling MIDI:
+		- IMidiQueue = helper class by Theo Niessink
+			- queues all time-stamped messages that arrrives from ProcessMidiMsg()
+			- handles them sample-accurately when you process the correspinding sample in ProcessDoubleReplacing()
+	- Attaching a GUI:
+		- Add PNG resource info to resources.h & myplugin.rc
+		- Create graphics context and attach controls, inked to parameter IDs
+	- IControls.h?
+	- Creating Factory Presets
+		- End of Contructor
+		- MakeDefaultPreset() = fills KNumParams with "blank" presets based on the default parameter values
+		- MakePreset() = create a preset with raw float values
+		- MakePresetFromNamedParams() = create a preset with param index, value pairs
+		- MakePresetFromChunk() = fill a preset with binary data
+		- MakePresetFromBlob() = fill a preset with bin64 encoded binary data
+	- Handle Tempo:
+		- Outside sample loop in ProcessDoubleReplacing()
+		- GetTempo()
+		- GetSamplePos()
+		- GetSamplesPerBeat()
+		- GetTime(ITimeInfo* pTimeInfo)
+	- Awesome C++ Refresher /  Basic info
+	- Class Inheritance
+		- plugin's base class is IPlug (IPlugBase)
+		- IPlug is actually IPlugAU or IPlugVST, depending on preprocessor macro definitions
+		- IGraphics is actually IGraphicsWin or IGraphicsMac depending on preprocessor macro definitions
+		- Switching happens in:
+			- WDL/IPlug/IPlug_include_in_plug_hdr.h
+			- WDL/IPlug/IPlug_include_in_plug_src.h
+		- IControl parent class to:
+			- IBitmapControl
+			- IFaderControl
+			- IFileSelectorControl
+			- IInvisibleSwitchControl
+			- IKeyboardControl
+			- IKnobControl
+			- IPanelControl
+			- IRadioButtonsControl
+			-ITextControl
+			- IURLControl
+	- DSP library for building up algorithms quickly with "urgens"
+		- open source libraries:
+			- ICST, libpd, JamomaDSP, Synthesis Tool Kit (STK), Gamma, Maximilian			
+			
+- Thoughts:
+	- IPlug is a Class
+	- WDL-OL is Oli Larkin's version of the WDL library
+	- I need to get Visual Studio working so I can run MyFirstPlugin. 
+	- I have yet to see code for individual modules (oscillators, filters, etc.)
+	- I want to start making my own code (variable names, fn names, formating, comments, etc.)
+	- Parameters are most likely variables that are directly related to the GUI.
 
 
---------------------------------------------
+--------------------------------------------------
 
-06/15/17 11:30pm
+06/15/17
 
 - I am going to begin the project by following this Martin Finkle article:
     http://www.martin-finke.de/blog/articles/audio-plugins-001-introduction/
     
 - Setup Part 1: Accessing the repository from the windows terminal
     A) Installing Git:
-          - https://www.youtube.com/watch?v=albr1o7Z1nw
-    B) Cloneing the repository onto my machine:
-      - https://help.github.com/articles/cloning-a-repository/
+        - https://www.youtube.com/watch?v=albr1o7Z1nw
         - Use most linux like options during installation
         - git config --global user.name "Brendan Thompson"
         - git config --global user.email "brenthompson2@gmail.com"
-        - git config --global core.editor notepad   // Sets default editor to notepad. 
-            *** I didn't do this ***
+        - git config --global core.editor notepad   // Sets default editor to notepad. *** I didn't do this ***
         - git config --list // Lists possible things to configure
+    B) Cloneing the repository onto my machine:
+		- https://help.github.com/articles/cloning-a-repository/
+		- Sucess! 
+		- Downloading files
+			- git fetch
+			- git status
+			- git pull
+		- Uploading files
+			- git add -A 	// A = uploads all
+			- git commit -m "Message" 	// -m = with message
+			- git push
+		- Undo Commit
+			- git reset HEAD^
         
 -------------------------------------------------
-06/16/17
 
-- Tested Pushing Ability
-- Setup Part 2: Installing and setting up the WDL-OL Library
-  - http://www.martin-finke.de/blog/articles/audio-plugins-002-setting-up-wdl-ol/
+06/14/17:
+	- Created Github Repository
+  
+	- Just Starting Info: http://www.kvraudio.com/forum/viewtopic.php?t=329696
+		- Areas of Exploration:
+			- Self-Teaching Advanced Topics
+			- Audio Basics
+			- Programming
+			- Maths
+			- Digital Signal Processing (DSP)
+			- dspguide.com
+			- Audio DSP
+		- Enviornments:
+			- SynthEdit
+			- SynthMaker
+			- Reaktor
+			- Max/MSP
+			- PureData
+			- CSound
+			- SuperCollider
+			- Bidule
+			- Usine 
+		- Frameworks:
+			- JUCE
+			- IPlug
+			- Cockos
+			- VST.NET
+			- Delphi ASIO and VST
+		  
+	- More Starting Info: http://www.soundonsound.com/techniques/vst-diy
+		1) "SaveAs" Programs 
+			(editing and playing = two different activities) 
+			(Virtual Processing modules joined on screen with virtual patch cables)
+			- SynthEdit by Jeff McClintock
+			- SynthMaker by Outsim
+			("Plug‑in authors who use them are dependent on the developers of the software in terms of the code 
+			framework — the exported plug‑ins are really just a bundled‑up 'runtime' and preset in a VST wrapper —
+			so if there's ever a problem that requires technical support, there are some very real limitations 
+			to what the plug‑in author can address on their own")
+		2) Cockos Reaper + JS Language
+			("Basically, JS takes care of all the basic audio and user‑interface stuff for you, freeing you to 
+			concentrate on writing your audio and MIDI processing in what they describe as a "C‑like language”, 
+			without having to do the grunt‑work of getting it to interface with your host and its plug‑in architecture.")
+      
+	- Researching different development methods:
+		- JUCE: http://www.olilarkin.co.uk/html/ftv2blank.png
+			- Free personal version
+			- https://www.youtube.com/watch?v=3Pm-WP4fv0k
+		- *** C++ and WDL-OL Library ("Whittle") and IPlug     ****Favorite So Far***
+			- http://www.martin-finke.de/blog/articles/audio-plugins-001-introduction/
+			- Windows Machine + Visual Studio 2010 or later
+		- Need software to test-host VST2 and VST3 plugins https://www.youtube.com/watch?v=uWitp7EOWVA
+			- VSTHost for VST2 and Steinberg VST Test Host for VST3
+		- Comparisons:
+			- https://www.kvraudio.com/forum/viewtopic.php?p=6760826 (WDL-OL Wins)
+   
+	- Books:
+        - *** "Designing Software Synthesizer Plug-Ins in C++: For RackAFX, VST3, and Audio Units" by Will Pirkle 
+          https://www.amazon.com/Designing-Software-Synthesizer-Plug-Ins-RackAFX/dp/1138787078/ref=cm_wl_huc_item
+        - "BasicSynth" by Daniel Mitchell https://www.amazon.com/BasicSynth-Daniel-Mitchell/dp/0557022126/ref=pd_rhf_p_t_1
+  
+    Thoughts:
+		- Need to Download all necessary software
+		- Hardest Parts are going to be getting the software setup, finding useful tutorials, and learning Digital Signal Processing
+		- Books seem like the most help when it comes to actual synth contstruction
+		- WDL and IPlug seem like what I want to use but are lacking in online resources.
 
-
-
-
+--------------------------------------------
 
 
 
