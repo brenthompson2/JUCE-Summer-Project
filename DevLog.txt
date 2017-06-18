@@ -13,6 +13,36 @@ This is the Development Log of my VST design process. I have been writing in it 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
+
+- Fixing Windows SDK Continued...
+	- https://stackoverflow.com/questions/43704734/how-to-fix-the-error-windows-sdk-version-8-1-was-not-found
+		- "Uninstall and during reinstall go to "individual componenets" and select Windows 8.1 SDK"
+		- "Then go to the project > Right click and Re-target to match the SDK required"
+		- "One or more projects in the solution were not loaded correctly. Please see the Output Window for details"	
+			- error  : Project "D:\Brendan\Documents\2017 Summer Project\VST Synthesizer Design\wdl-ol\AAX_SDK\Libs\AAXLibrary\WinBuild\AAXLibrary.vcxproj" could not be found.
+			- error  : Project "D:\Brendan\Documents\2017 Summer Project\VST Synthesizer Design\wdl-ol\PT9_SDK\AlturaPorts\TDMPlugIns\PlugInLibrary\WinBuild\PlugInLib.vcxproj" could not be found.
+- Ran project and output windows has 524 Errors... 
+	- "Cannot open source file 'string.h'", stdlib.h, ctype.h, math.h, assert.h
+		- Multiple different files failed this
+	- Error E0282: "The global scope has no 'acosf'", asinf, atanf, atan2f, ceilf, cosf, coshf, expf, fabsf, floorf, fmodf, frexpf, ldexpf, logf, log10f, modff, powf, sqrtf, etc.
+		- all from cmath
+	- Error E1696: "cannot open source file 'corecrt.h'", stddef.h, stdio.h
+		- from crtdefs, stddef.h, and stdio.h, respectively.
+	- Error E0020: identifier "FILE" is undefined
+		- from cstdio
+	- Apparently the standard libraries are missing
+		- https://social.msdn.microsoft.com/Forums/vstudio/en-US/0f580a73-6f11-4aa6-abbe-6bf1438734c2/standard-files-stddefh-stringh-missing-in-visual-studio-2015-rc?forum=vclanguage
+		- "The headers, sources, and libraries are now distributed as part of a separate Universal CRT SDK. This SDK is included with Visual Studio; it is installed by default to C:\Program Files (x86)\Windows Kits\10."
+		- Checking Individual Components for "Universal CRT SDK"...
+			- It was unselected!! Trying again...
+			- "2 Succeeded and 1 Failed."
+			- "Couldn't find path to .exe" still
+			- Only 478 errors now, still including gems like "cannot open source file "string.h""
+			- Going to work where I have no internet...
+		
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
 06/17/17
 
 - Uninstall and Reinstall Visual Studio
@@ -50,13 +80,11 @@ This is the Development Log of my VST design process. I have been writing in it 
 					- lice, IPlug, IPlugEffect-app
 - Correcting my version of Windows SDK... 
 	- Retraced steps of installing dependancies and all the files look correct.
-	- Researching Error...
-		- "Try installing the windows sdk 8.1 from: https://developer.microsoft.com/en-us/windows/downloads/windows-8-1-sdk"
-			- Windows Software Development Kit (SDK) for Windows 8.1
-			- Not Windows 10 compatable? 
-			- Im gonna look for a windows 10 version...
-			- 
-				
+	- "Try installing the windows sdk 8.1 from: https://developer.microsoft.com/en-us/windows/downloads/windows-8-1-sdk"
+		- *** DIDNT't DO ***
+		- Windows Software Development Kit (SDK) for Windows 8.1
+		- I hope that in the end this all compatable with win10 / VS17			
+			
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
