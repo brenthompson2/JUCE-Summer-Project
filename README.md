@@ -22,25 +22,25 @@ and also Serum which is by Xfer Records.
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-			- Current Status - 06/19/17 ---
+			- Current Status - 07/17/17 ---
 			
-- It has been a slow and laborious process getting my first plugin to build and be ran
+- It has been a slow and laborious process attempting to get my first plugin to build and run
 - After trying WDL-OL for 3 days I have switched to trying JUCE
-- Currently I am unable to get an add-on from neither WDL-OL or JUCE to compile on Visual Studio 2017 on my Windows 10 partition
+- Currently I am unable to get an add-on from WDL-OL or JUCE to compile on Visual Studio 2017 on my Windows 10 partition
 - I am going to attempt to use the VS2015 toolkit and/or possibly attempt to use JUCE on my linux partition and use gcc to compile it
+- I have been doing a lot of research into coding with JUCE
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
 			- The Development Logs ---
 			
-There are a few reasons that I am creating this detailed log:
-1) I want to make some awesome custom synths that my friends and I can use in music production
-2) The information will be here for me to look back at it in the future if I run into similar problems or need to repeat any processes
-3) It helps me keep all of these webpages and other sources of information organized and available
-4) Maybe someday someone will use this to guide them through VST Plugin creation 
-5) Possibly by publishing this online other people dealing with some of these same issues can possibly learn from my experience
-6) I hope that it may both strengthen and demonstrate my ability to learn advanced topics, solve all sorts of problems, stay motivated, get excited, and produce beautiful programs.
+There are a few reasons that I am creating these detailed log:
+	- It serves as a guide in case I ever need to redo any of the processes
+	- It is a notebook to review and reference while producing audio software
+	- There are summaries of research such as articles, tutorials, and videos that I can always reference
+	- Hopefully others may use this to guide their own research into Audio Plugin creation 
+	- As a demonstration of my current ability and potential to grow
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------	
