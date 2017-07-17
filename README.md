@@ -2,7 +2,7 @@
 
 Brendan Thompson
 README.md
-06/19/17
+07/17/17
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
@@ -26,6 +26,8 @@ and also Serum which is by Xfer Records.
 			
 - It has been a slow and laborious process getting my first plugin to build and be ran
 - After trying WDL-OL for 3 days I have switched to trying JUCE
+- Currently I am unable to get an add-on from neither WDL-OL or JUCE to compile on Visual Studio 2017 on my Windows 10 partition
+- I am going to attempt to use the VS2015 toolkit and/or possibly attempt to use JUCE on my linux partition and use gcc to compile it
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
@@ -67,15 +69,18 @@ There are a few reasons that I am creating this detailed log:
 		- Everything being outdated and nothing working is annoying me
 		- Tracking down all of these SDKs and Dependencies is a struggle
 	3) Can't turn Basic Visual Studio Project into WLD-OL example plugin project
-		- All of the content in the files are radically different
-		- The folders are totally different and have different files
+		- All of the content in those files is totally different
+		- The folder / file structure is totally different
 	4) EVERYTHING is old and outdated
  
 - Why I Originally Chose WDL-OL ---
-	1) It relies heavily on just code and very little on virtual hardware or pre-coded modules. 
-	2) It involves using Microsoft Visual Studio, which is software that I need to start getting acquanted with. 
+	1) It relies heavily on just code and very little on virtual hardware or pre-coded modules.
+		- So does JUCE
+	2) It involves using Microsoft Visual Studio, which is software that I need to start getting acquanted with.
+		- So does JUCE
 	3) There is an in depth tutorial for the method online at http://www.martin-finke.de/blog/articles/audio-plugins-001-introduction/
-
+		- JUCE has a lot more than just 1 tutorial
+		
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
