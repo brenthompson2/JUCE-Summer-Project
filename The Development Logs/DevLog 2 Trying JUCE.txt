@@ -2,31 +2,110 @@
 Development Log 2: Trying JUCE
 
 - Overview ---
+
 This second log details my experience installing JUCE and trying to get my first plugin to build and be ran
 
+07/17/17
+
+Summary:
+	- Watched the first 5 videos of The Audio Programmer's JUCE tutorial
+	- JUCE online API Documentation = https://www.juce.com/doc/classes
+Thoughts:
+	- I wanna start coding already! Stupid VS2017 incompatabilities
+	- Interesting to use rectangles to divide UI elements
+
+- Creating a Synthesizer in JUCE
+	- Example synth: https://www.youtube.com/watch?v=dYNx7PW5b9M
+
+- JUCE Fraimwork Tutorial 00 - Intro and Building your First Project by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=7n16Yw51xkI
+	- Book Source: Getting started with JUCE by Martin Robinson
+		- https://www.amazon.co.uk/Getting-Started-JUCE-Martin-Robinson/dp/1783283319
+	- Example Demo Project looks incredibly helpful: 3:30 or 7:40
+	- Accesses info on a class by cmd-clicking on an object in the code: 13:30
+
+- Juce Tutorial 01- The Document Window Class by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=OPSKfPWdr90&t=13s
+	- Summary = The basic application window
+	- Similar to https://juce.com/doc/tutorial_main_window
+	- https://www.juce.com/doc/classDocumentWindow
+	- The DocumentWindow 
+		- Name
+		- Background Color
+		- titleBarButtons (close, minimize, expand) uses a bitmask: 5:30
+	- View JUCE documentation online: 11:50
+		- can see what is inherited
+	- Use OS native title bar: 16:15
+
+- Juce Tutorial 02- The Main Content Component Window by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=WJYlJkLafFc&t=7s
+	- Summary = The main GUI
+	- https://www.juce.com/doc/classDocumentWindow
+	- Inherited Functions
+		- Paint = UI. Knobs, Sliders, Text, etc
+			- centering objects = justification: centered: 9:10
+		- Resized = When instantiated or resized
+	
+- Juce Tutorial 03- The Graphics Class, Parent & Child Components by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=rguyzHWbFwU
+	- Summary = Paint some basic shapes and text as child components of MainComponent
+	- Drawing a NewComponent on the screen as a child of MainComponent
+		1) Create NewComponent source and header files = 2:30
+		2) #include NewComponent.h in MainComponent.h = 4:00
+		3) Declare the NewComponent as a private object (child) to MainComponent = 4:20
+		4) Paint the NewComponenet: 5:36
+		5) AddAndMakeVisible(NewComponent) in constructor of MainComponent: 9:49
+		6) Draw NewComponent coordinates relative to parent = NewComponent.setBounds(getLocalBounds): 10:32
+	- Painting a path (closed shape or open ended): 23:00
+		- Path newPath;
+		- newPath.startNewSubPath(x, y);
+		- newPath.lineTo(x, y);
+		- newPath.closeSubPath();
+		- g.fillPath(newPath);
+		- g.strokePath(newPath, PathStrokeType(2.0f));
+	- Painting text: 37:00
+		- Font class for more customization
+			- Font theFont(*Font Name*, *type*, size);
+			- g.setFont(theFont);
+		- g.drawText("The Text", Xcord, Ycord, width, height, Justification::topLeft););
+	
+- Juce Tutorial 04 - The Slider & Rectangle Class by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=viR1Z7byTYw
+	- Summary = 
+	- Creating a dial (slider)
+		1) Declaration in MainComponent.h = Slider dial1;
+		2) addAndMakeVisable(dial1); in MainComponent constructor
+		3) chose the type (slider, dial, etc) = dial1.setSliderStyle(Slider::SliderStyle::Rotary); 6:40
+		4) setTextBoxStyle (above/below, readOnly = false so we can edit by typing, width, height);
+		5) synch coordinates with parent = dial1.setBounds(getLocalBounds());
+	- Use the rectangle class for laying out UI to ensure scalability 10:25
+		1) Rectangle<int> mainArea = getLocalBounds();
+		2) Rectangle<int> dialArea = area.removeFromBottom((area.getHeight() / 2)); = divided in half
+		3) dial1.setBounds(dialArea);
+		4) set a border = dial1.setBounds(dialArea.reduced(border)); 30:00
+		
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
 07/16/17
 
-- Summary:
+Summary:
 	- Unfortunately, I do not have internet on my laptop right now and therefore can't reinstall Visual Studio.
 	- Researched Solutions and Basic JUCE add-on Tutorials
 Thoughts:
-	- I am excited to get back to this project after going on three vacations and welcoming an 8 week old German Shepherd puppy into the household
+	- I am excited to get back to this project after going on three vacations and welcoming an 8 week old German Shepherd puppy into the family
 
 - Possible other IDEs:
 	- use VS2015 toolset with VS2017
 		- https://forum.juce.com/t/visual-studio-2017-exporter/20668/3
 		- comment on March 11th by pflugshaupt
+	- JUCE installation on Ubuntu Linux partition
+		- https://forum.juce.com/t/easy-juce-installation-on-ubuntu-linux-16-04/18159
+		- 1 script that downloads all files, installs all dependencies, builds the projucer, creates a .desktop launcher, and makes the Projucer the default for .jucer files
 
 - Compile from the command line
 	- https://www.youtube.com/watch?v=5Y9Cx5cLM50
-
-- JUCE installation on Ubuntu Linux
-	- https://forum.juce.com/t/easy-juce-installation-on-ubuntu-linux-16-04/18159
-	- 1 script that downloads all files, installs all dependencies, builds the projucer, creates a .desktop launcher, and makes the Projucer the default for .jucer files
-
+	
 - "Manage your Projucer project"
 	- https://www.juce.com/doc/tutorial_manage_projucer_project
 	- Summary: Basics of the file structure and the projucer interface
@@ -148,13 +227,13 @@ Thoughts:
 ------------------------------------------------------------------------------
 
 06/19/17
-	
-- Summary:
+
+Summary:
 	- Switched to JUCE
 	- Still struggling to get Visual Studio to build projects
 	- After Modifying the install of Visual Studio, the program stopped working completely
 	
-- Thoughts:
+Thoughts:
 	- Visual Studio has been nothing but trouble
 	- I want to figure out how to build projects using VS through the command line
 	- The WDL-OL code looked a lot nicer
