@@ -50,6 +50,7 @@ There are a few reasons that I am creating these detailed log:
 - Why I Switched to JUCE ---
 	- Hopefully up to date and compatible with modern computers
 	- Well developed and maintained by a legitimate company
+	- Used by professionals to produce popular legitimate software
 	- Online resources like forums and videos
 	- Advanced Libraries and Classes
 		- JUCE handles most Digital & Audio Signal Processing
