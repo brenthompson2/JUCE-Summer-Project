@@ -1,0 +1,19 @@
+
+Brendan Thompson
+Development Log 3: JUCE on Ubuntu
+
+- Overview ---
+
+This third log details my experience installing JUCE on Ubuntu and trying to get my first plugin to build and be ran
+
+07/20/17
+
+Summary:
+	- Researched JUCE on Linux
+Thoughts:
+  - This looks super familiar and easy
+  - I am already comfortable with g++ and Makefiles
+
+- JUCE on Linux:
+  - https://forum.juce.com/t/list-of-juce-dependencies-under-linux/15121
+  - https://forum.juce.com/t/easy-juce-installation-on-ubuntu-linux-16-04/18159
