@@ -2,7 +2,7 @@
 Development Log 1: Trying IPlug
 
 - Overview ---
-This first log details my 3 day long struggle installing IPlug and WDL-OL and trying to get my first plugin to build and be ran
+This first log details my 3 day long struggle installing IPlug and WDL-OL and trying to get my first plugin to build and run. Visual Studio 2017 was unable to build a basic project
 	
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------

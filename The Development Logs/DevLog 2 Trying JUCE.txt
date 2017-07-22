@@ -3,7 +3,7 @@ Development Log 2: Trying JUCE
 
 - Overview ---
 
-This second log details my experience installing JUCE and trying to get my first plugin to build and be ran
+This second log details my experience installing JUCE and trying to get my first plugin to build and run. Again Visual Studio 2017 was incompatable
 
 07/17/17
 
@@ -333,6 +333,7 @@ Thoughts:
 		- Visual Studio Modification:
 			- Individual Components all Windows 10 SKDs & all 3 Windows Workloads
 			- "The setup for this installation of Visual Studio is not complete. Please run the Visual Studio Installer again to correct the issue"
+		- Looking at "Visual Studio Build Error Log.txt" it appears a bunch of the necessary SDKs and other components/workloads didn't install properly 
 - Visual Studio is broken again...
 		
 - "The Golden Rules of Audio Programming, Pete Goodliffe" by JUCE on YouTube

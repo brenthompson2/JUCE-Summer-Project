@@ -1,0 +1,105 @@
+﻿The product failed to install the listed workloads and components due to one or more package failures.
+
+Incomplete workloads
+    .NET desktop development (Microsoft.VisualStudio.Workload.ManagedDesktop,version=15.0.26412.1)
+    Desktop development with C++ (Microsoft.VisualStudio.Workload.NativeDesktop,version=15.0.26403.0)
+    Universal Windows Platform development (Microsoft.VisualStudio.Workload.Universal,version=15.0.26403.0)
+
+Incomplete components
+    .NET Framework 4 – 4.6 development tools (Microsoft.Net.ComponentGroup.TargetingPacks.Common,version=15.0.26208.0)
+    .NET Framework 4.5.1 targeting pack (Microsoft.Net.Component.4.5.1.TargetingPack,version=15.0.26208.0)
+    Entity Framework 6 tools (Microsoft.VisualStudio.Component.EntityFramework,version=15.0.26208.0)
+    Universal Windows Platform tools (Microsoft.VisualStudio.Component.UWP.Support,version=15.0.26412.1)
+    Universal Windows Platform tools for Cordova (Microsoft.VisualStudio.ComponentGroup.UWP.Cordova,version=15.0.26403.0)
+    Universal Windows Platform tools for Xamarin (Microsoft.VisualStudio.ComponentGroup.UWP.Xamarin,version=15.0.26403.0)
+    Windows 10 SDK (10.0.10240.0) (Microsoft.VisualStudio.Component.Windows10SDK.10240,version=15.0.26208.0)
+    Windows 10 SDK (10.0.10586.0) (Microsoft.VisualStudio.Component.Windows10SDK.10586,version=15.0.26208.0)
+    Windows 10 SDK (10.0.14393.0) (Microsoft.VisualStudio.Component.Windows10SDK.14393,version=15.0.26208.0)
+
+You can search for solutions using the information below, modify your selections for the above workloads and components and retry the installation, or remove the product from your machine.
+
+Following is a collection of individual package failures that led to the incomplete workloads and components above. To search for existing reports of these specific problems, please copy and paste the URL from each package failure into a web browser. If the issue has already been reported, you can find solutions or workarounds there. If the issue has not been reported, you can create a new issue where other people will be able to find solutions or workarounds.
+
+Package 'Microsoft.Net.CoreUWP,version=1.0.4' failed to install.
+    Search URL: https://aka.ms/VSSetupErrorReports?q=PackageId=Microsoft.Net.CoreUWP;PackageAction=Install;ReturnCode=1603
+    Impacted workloads
+        Universal Windows Platform development (Microsoft.VisualStudio.Workload.Universal,version=15.0.26403.0)
+    Impacted components
+        Universal Windows Platform tools (Microsoft.VisualStudio.Component.UWP.Support,version=15.0.26412.1)
+        Universal Windows Platform tools for Cordova (Microsoft.VisualStudio.ComponentGroup.UWP.Cordova,version=15.0.26403.0)
+        Universal Windows Platform tools for Xamarin (Microsoft.VisualStudio.ComponentGroup.UWP.Xamarin,version=15.0.26403.0)
+    Log
+        C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_001_Microsoft.Net.CoreUWP.log
+    Details
+        MSI: C:\ProgramData\Microsoft\VisualStudio\Packages\Microsoft.Net.CoreUWP,version=1.0.4\netfx_NETCoreUWP.msi, Properties:  REBOOT=ReallySuppress ARPSYSTEMCOMPONENT=1  MSIFASTINSTALL="7" 
+        Return code: 1603
+        Return code details: Fatal error during installation.
+
+Package 'Win10SDK_10.0.14393.795,version=10.0.14393.79513' failed to install.
+    Search URL: https://aka.ms/VSSetupErrorReports?q=PackageId=Win10SDK_10.0.14393.795;PackageAction=Install;ReturnCode=-2147024784
+    Impacted workloads
+        Desktop development with C++ (Microsoft.VisualStudio.Workload.NativeDesktop,version=15.0.26403.0)
+        Universal Windows Platform development (Microsoft.VisualStudio.Workload.Universal,version=15.0.26403.0)
+    Impacted components
+        Windows 10 SDK (10.0.14393.0) (Microsoft.VisualStudio.Component.Windows10SDK.14393,version=15.0.26208.0)
+    Log
+        C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_041_Win10SDK_10.0.14393.795.log
+    Details
+        Command executed: "c:\windows\syswow64\\windowspowershell\v1.0\powershell.exe" -NonInteractive -NoLogo -NoProfile -ExecutionPolicy Bypass -InputFormat None "$ErrorActionPreference="""Stop"""; $VerbosePreference="""Continue"""; $ScriptPath="""C:\ProgramData\Microsoft\VisualStudio\Packages\Win10SDK_10.0.14393.795,version=10.0.14393.79513\WinSdkInstall.ps1"""; $SetupExe="""sdksetup.exe"""; $SetupLogFolder="""standalonesdk"""; $PackageId="""Win10SDK_10.0.14393.795"""; $LogFile="""C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_041_Win10SDK_10.0.14393.795.log""";  $SetupParameters="""/features OptionId.AvrfExternal OptionId.WindowsSoftwareDevelopmentKit OptionId.WindowsSoftwareLogoToolkit /quiet /norestart"""; (gc $ScriptPath | out-string) | Invoke-Expression; if (!$?) { exit 1603 } elseif ($LastExitCode) { exit $LastExitCode }"
+        Return code: -2147024784
+        Return code details: There is not enough space on the disk.
+
+Package 'Win10SDK_10.0.10586.212,version=10.0.10586.21215' failed to install.
+    Search URL: https://aka.ms/VSSetupErrorReports?q=PackageId=Win10SDK_10.0.10586.212;PackageAction=Install;ReturnCode=15605
+    Impacted workloads
+        Desktop development with C++ (Microsoft.VisualStudio.Workload.NativeDesktop,version=15.0.26403.0)
+        Universal Windows Platform development (Microsoft.VisualStudio.Workload.Universal,version=15.0.26403.0)
+    Impacted components
+        Windows 10 SDK (10.0.10586.0) (Microsoft.VisualStudio.Component.Windows10SDK.10586,version=15.0.26208.0)
+    Log
+        C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_042_Win10SDK_10.0.10586.212.log
+    Details
+        Command executed: "c:\windows\syswow64\\windowspowershell\v1.0\powershell.exe" -NonInteractive -NoLogo -NoProfile -ExecutionPolicy Bypass -InputFormat None "$ErrorActionPreference="""Stop"""; $VerbosePreference="""Continue"""; $ScriptPath="""C:\ProgramData\Microsoft\VisualStudio\Packages\Win10SDK_10.0.10586.212,version=10.0.10586.21215\WinSdkInstall.ps1"""; $SetupExe="""sdksetup.exe"""; $SetupLogFolder="""standalonesdk"""; $PackageId="""Win10SDK_10.0.10586.212"""; $LogFile="""C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_042_Win10SDK_10.0.10586.212.log"""; $SetupParameters="""/features OptionId.AvrfExternal OptionId.WindowsSoftwareDevelopmentKit OptionId.WindowsSoftwareLogoToolkit /quiet /norestart"""; (gc $ScriptPath | out-string) | Invoke-Expression; if (!$?) { exit 1603 } elseif ($LastExitCode) { exit $LastExitCode }"
+        Return code: 15605
+        Return code details: There was a problem downloading your product.
+
+Package 'Win10SDK_Hidden_10.0.10240_2,version=10.0.10240.115' failed to install.
+    Search URL: https://aka.ms/VSSetupErrorReports?q=PackageId=Win10SDK_Hidden_10.0.10240_2;PackageAction=Install;ReturnCode=15605
+    Impacted workloads
+        Desktop development with C++ (Microsoft.VisualStudio.Workload.NativeDesktop,version=15.0.26403.0)
+        Universal Windows Platform development (Microsoft.VisualStudio.Workload.Universal,version=15.0.26403.0)
+    Impacted components
+        Windows 10 SDK (10.0.10240.0) (Microsoft.VisualStudio.Component.Windows10SDK.10240,version=15.0.26208.0)
+    Log
+        C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_043_Win10SDK_Hidden_10.0.10240_2.log
+    Details
+        Command executed: "c:\windows\syswow64\\windowspowershell\v1.0\powershell.exe" -NonInteractive -NoLogo -NoProfile -ExecutionPolicy Bypass -InputFormat None "$ErrorActionPreference="""Stop"""; $VerbosePreference="""Continue"""; $ScriptPath="""C:\ProgramData\Microsoft\VisualStudio\Packages\Win10SDK_Hidden_10.0.10240_2,version=10.0.10240.115\WinSdkInstall.ps1"""; $SetupExe="""sdksetup.exe"""; $SetupLogFolder="""standalonesdk"""; $PackageId="""Win10SDK_Hidden_10.0.10240_2"""; $LogFile="""C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_043_Win10SDK_Hidden_10.0.10240_2.log"""; $SetupParameters="""/features OptionId.AvrfExternal OptionId.WindowsSoftwareDevelopmentKit OptionId.WindowsSoftwareLogoToolkit /quiet /norestart"""; (gc $ScriptPath | out-string) | Invoke-Expression; if (!$?) { exit 1603 } elseif ($LastExitCode) { exit $LastExitCode }"
+        Return code: 15605
+        Return code details: There was a problem downloading your product.
+
+Package 'Microsoft.Net.4.5.1.TargetingPack,version=4.5.50932' failed to install.
+    Search URL: https://aka.ms/VSSetupErrorReports?q=PackageId=Microsoft.Net.4.5.1.TargetingPack;PackageAction=Install;ReturnCode=1307
+    Impacted workloads
+        .NET desktop development (Microsoft.VisualStudio.Workload.ManagedDesktop,version=15.0.26412.1)
+    Impacted components
+        .NET Framework 4 – 4.6 development tools (Microsoft.Net.ComponentGroup.TargetingPacks.Common,version=15.0.26208.0)
+        .NET Framework 4.5.1 targeting pack (Microsoft.Net.Component.4.5.1.TargetingPack,version=15.0.26208.0)
+    Log
+        C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_060_Microsoft.Net.4.5.1.TargetingPack.log
+    Details
+        MSI: C:\ProgramData\Microsoft\VisualStudio\Packages\Microsoft.Net.4.5.1.TargetingPack,version=4.5.50932\netfx_451mtpack.msi, Properties:  REBOOT=ReallySuppress ARPSYSTEMCOMPONENT=1  MSIFASTINSTALL="7"  EXTUI="1" 
+        Return code: 1307
+        Return code details: There is not enough disk space to install this file: C:\WINDOWS\Installer\f3d4e.msi.  Free some disk space and click Retry, or click Cancel to exit.
+
+Package 'Microsoft.VisualStudio.EntityFrameworkTools.Msi,version=6.1.60104.0' failed to install.
+    Search URL: https://aka.ms/VSSetupErrorReports?q=PackageId=Microsoft.VisualStudio.EntityFrameworkTools.Msi;PackageAction=Install;ReturnCode=1603
+    Impacted workloads
+        .NET desktop development (Microsoft.VisualStudio.Workload.ManagedDesktop,version=15.0.26412.1)
+    Impacted components
+        Entity Framework 6 tools (Microsoft.VisualStudio.Component.EntityFramework,version=15.0.26208.0)
+    Log
+        C:\Users\Brendan\AppData\Local\Temp\dd_setup_20170620170720_061_Microsoft.VisualStudio.EntityFrameworkTools.Msi.log
+    Details
+        MSI: C:\ProgramData\Microsoft\VisualStudio\Packages\Microsoft.VisualStudio.EntityFrameworkTools.Msi,version=6.1.60104.0\EF6Tools.msi, Properties:  REBOOT=ReallySuppress ARPSYSTEMCOMPONENT=1  MSIFASTINSTALL="7"  VSEXTUI="1" 
+        Return code: 1603
+        Return code details: Fatal error during installation.
