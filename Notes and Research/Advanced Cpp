@@ -1,0 +1,246 @@
+Brendan Thompson
+AdvancedCpp
+
+Part 1: Research from the website cplusplus.bordoon.com/cplusplusadvice.html
+Part 2: Research from the online textbook "Tips and Tricks of the C++ Professionals" from www.bordoon.com/book/index.html
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-Part 1: Research from the website cplusplus.bordoon.com/cplusplusadvice.html-
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+cplusplus.bordoon.com/cplusplusadvice.html
+
+A) Developing multi-threaded applications: cplusplus.bordoon.com/using_threads.html
+	- Necessary in fields where hangups can't happen (Medical, Military, Financial, etc
+	- Execution Phases of a program:
+		1) static initialization occurs before main() begins
+		2) after main() begins but before multi-threading starts
+		3) while the threads are running normally
+		4) while the threads are shutting down
+		5) after all threads shutdown
+	- Write or use an existing library for calls to low-level thread functions
+		- application should only know top level info (accessing the input queue)
+	- Use Mutexes to automate unlocking
+		- Never unlock a mutex in a different thread than the one that locked it
+		- Use Condition Variables with your mutexes to wait (not "sleep()", etc. ")
+		- avoid recursive mutexes (usually a sign of bad design choices)
+		- Example "Scoped Mutex" using "boost::" :
+			"
+			boost::mutex lockVariable;
+			int protectedVariable;
+			... 
+			// Some Function
+			{
+				boost::mutex::scoped_lock locker(lockVariable);
+				protectedVariable = 10;
+				someOtherFun();
+			}	// automatically unlocks at end of scope
+			"
+			- How does protected Variable get linked with the mutex? boost::s magic?
+		- Use Metexes to protect creating processes
+	- Make use of exceptions
+		- pushing pointers into a container can throw an exception. Exaple:
+			"
+			std::list<SomeContainerClass> container;
+			std::auto_ptr<SomeClass> ap(new SomeClass());
+			{
+				// Do not seperate these two lines:
+				container.push_back(ap.get());
+				ap.release();
+			}
+			"
+			- Use auto_ptr when exceptions must be handled
+			- If pushing causes exception the auto_ptr still owns the memory
+			- if no exception, the release() method on the auto_ptr will unhook it from the data
+	- Don't create/destroy threads dynamically
+		- expensive in time and memory
+		- timing of exit is not gauranteed
+		- Use thread command pools
+	- Don't share variables between threads
+		- Mutexes for sharing variables are slow
+		- initialized constants okay to share
+		- There are "thread safe queues" for communicating data
+	- Be careful passing std::strings
+		- never copy or assign a string variables into a data structure to be used by another thread
+			- instead default construct an empty string and then assign() from std::basic_string to append (why?)
+	- Only use thread-safe code
+		1) doesn't share variables between threads (re-entrant)
+		2) Uses thread safe communication strategies
+		3) use exceptions properly to communicate with thread pools
+		- if must use unsafe code, put it in its own thread and have it read safely through the command queue
+		- Logging:
+			- STDOUT and STDERR are bad
+			- time stamp messages by the nano-second 
+				- EX: (YYYY-MM-DD-H24:mm:ss:nnnnnnnnn) ThreadTypeID: functionName: Message...
+	- Learn to use the Mult-threaded debug features of your debugger
+	- Never reload DLLS or Shared Libraries: can currupt the data if in use by other thread
+
+
+
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------Part 2: Research from the online textbook ------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Notes from the online book "Tips and Tricks of the C++ Professionals"
+
+www.bordoon.com/book/index.html
+
+Chapter 1) Introduction
+Chapter 2) Overview of this book
+Chapter 3) Becoming a C++ Expert:
+	1) Understand C++
+		- Some of C++ best features aren't object oriented: templates and meta-objects
+		A) A better c
+			- templates, inline functions, and reference variables as fn args eliminate the need for C macros
+			- const variable declarations and enum's remove the need for #defining constants 
+		B) Functionality with classes and structs
+			- naming conventions are nice (SomeClass::some_member())
+			- control permissions
+			- OOP:
+				- understand encapsulation of data and methods in classes
+				- design methods to guarantee the internal state of the data
+		C) Containers
+			- vectors, stacks, lists, associative arrays, etc.
+	B) practice, practice, practice
+	C) Read Good Books:
+		- "The C++ Programming Language, 3rd Edition" - Bjarne Stroustrup
+		- "Effective C++" - Scott Myers
+		- "Large Scale C++ Development" - John Lakoss
+	D) Learn your tools:
+		- Editor
+		- Configuration Management Systems: run back time and get old code (CVS, Clearcase)
+			- work as a branch of the master when attempting large scale overhauls
+			- Purify memory misuse detection by IBM/rational
+				- can tell you the exact line that caused the error
+				- valgrind is available for linux
+			- Test Coverage Analysis tools:
+				- purecov by IBM/rational
+				- tcov on linux
+				- pcov
+				- covtool
+	E) Edit your code with scripts
+		- sed = standard unix tool
+		- perl = sophisticated changes and substituting multiple lines of text
+		- usually some hand work to be done after
+	F) Learning the STL
+		- When implementing algorithms, containers, or iterators, follow the paradigm set by the STL classes
+		- auto_ptr = memory is owned by the pointer
+			- ensures the memory is deleted
+			- compile time detection of mis-uses
+			- whenever copy or assigment is invoked, it takes ownership away from the source variable
+			- useful for:
+				- local variables initialized with new
+				- class members that own memory
+				- functions returning new'd objects that must be deleted by the caller
+			"
+			void foo(int *p);
+			
+			int main()
+			{
+				auto_ptr<int> pointer(new int(8));
+				foo(pointer); // error
+				foo(pointer.get()); //retains ownership
+				foo(pointer.release()); //releases ownership
+			}
+			"
+4) Adopt Good Habits
+	A) play in your home directory, not the code base
+		- am I playing in the code base rn with this project?
+	B) Design all software as if it were a library
+		- think of the program as a building constructed of floors
+			- the "application" can just be a thin layer of glue logic on top of existing well-defined libraries with documented interfaces that can be easily tested early
+		- reusability in mind
+		- templates
+		- easily tested
+	C) Use Automation to prevent problems
+		- Build process automation:
+			- All products obviously built using Makefiles, Scripts, IDE Build Settings, etc.
+			- Great time to automate the detection of the use of prohibited symbols or coding practices
+				- add additional rules to search the code during build time for violations
+		- Automation in the source code:
+			- to ensure resources get freed declare a variable of a special type whose destructor performs the release
+		- auto-ptr:
+		- Handles:
+			- a class object like a pointer but also with a ReferenceCount
+			- creating/destroying a handle increments/decrements the ReferenceCount
+			"
+			auto_handle<ClassName> p (new ClassName(parms));
+
+			{
+			 auto_handle<ClassName> q (new ClassName(otherParms));
+			 p = q; //both p & q point to same thing
+			}	
+			// q destructed but p still active
+			"
+	D) Test Early and Often
+		- Regression Tests:
+			- developer created test suite that can run before checking changes into your code base
+			- runs quickly but with much more diagnostic testing
+			- "White Box" tests
+			- QA Team does "Black Box" tests
+		- test to a level of 85% (85% of the lines of code have been executed on real data)
+			- purecov, tcov (linux), pcov (other unix), covtool
+		- Memory Misuse Detection
+			- purify, valgrind
+			- The hard ways: use the memory allocator's internal tables to detect when its memory chains are broken
+				- malloc header file may describe iterating over the chains and detecting bad links
+				- Microsoft compiler has "heapwalk" 
+				- Other Method: check for mishandled data when destructing
+					- superseed the global ::operator new
+						- basically just calls malloc and returns its value
+						- intercept the calls to new and add known values at the beginning and end of the heap packets 
+					-  during ::operator delete make sure the correct values are still there
+						- if not, the program misbehaved
+					- Tips for this:
+						- the size parameter to operator new can be any number
+						- memory can only be allocated in fixed size chunks
+							- usually multiples of sizeof(double)
+						- add known values in multiples of the chunk size
+	E) Naming Conventions:
+		- do not use any simple english work that might be computer science related
+		- use longer names seperated by underscored for #define, symbol, class, and variable names
+		- avoid polluting the global namespace
+		- Basic Format:
+			* Class, typedef, and enum type names = MixedCase / Mixed_Case
+			* Namespace, variables, and fn names = lower_case
+			* global namespace contants, enumeration values, and #define constants = UPPERCASE_WITH_UNDERSCORES
+			* class members = trailing_underscore_
+		- compiler vendors are supposed to make their preprocessor defines begin with a "_", so don't do that ("_srikanth")
+		- avoid #define, use typedefs, inline fns, and const variables
+		- for source code file names use the compiler's -I parameters to help you find the code
+		- When specifying path names for #includes <UseBrackets.h> don't "UseQuotes.h"
+		- to reduce the chance of a name conflict between header files when specifying the path use the directory name also
+			- #include <my_project/myfile.h>
+	F) Port early and often, even if you don't need to
+		- multiple different compilers & operating systems
+		- check for compiler errors & bugs
+		- Common Porting Problems:
+			- Assuming the size of pointers
+			- Assuming that integers and longs are the same size
+			- Using platform specific behaviors:
+				- headers, libraries
+				- treating vector<T>::iterator as a pointer not a full function class object
+				- using symbol names that may be defined as macros on another system
+			- different compiler revision levels means some features may need to be avoided
+	G) Go the extra mile
+		- Make everything a class that guarantees the safety of the data, not just a pile of data
+		- Guidelines for completeness:
+			- Watch the ownership of new'd up memory
+			- Make use of your destructor / use auto_ptr
+			- make an assignment operator / comparison operators
+	H) Static Initialization is useful but sketchy
+		- Initialize a variable before main() starts by calling functions and class object constructors
+		- Globals are dangerous:
+			A) one static may rely on another to initialize before it can initialize
+				- bad for building a class
+			B) Linkage order dependencies
+				- if one file requires another file to already have manipulate variables in a shared header
+5) Speed! (Writing fast programs)
+6) 

@@ -1,0 +1,106 @@
+Brendan Thompson
+Basic Audio Software Development Research
+
+------------------------------------------
+------------------------------------------
+
+06/19/17
+
+"The Golden Rules of Audio Programming, Pete Goodliffe" by JUCE on YouTube
+	- Multiple Cores = Manage threads carefully
+		- UI seperate from Audio
+		- Run Multiple Instances at once
+		- add more features
+	- Buffer size affects responsivity
+	- Audio Generation must take less time than the buffer period
+	- Preception:
+		- UI Perception:
+			- 100ms = instantaneous
+			- 1s = interacting freely
+			- 10s = huge delay
+		- Audio Response is much finer:
+			- 1-5ms = instantaneous/at once
+			- 40ms = echo
+	- Golden Rules
+		1) Stay within CPU budget
+			- Latency = speed
+			- Unacceptable to not get audio out of the renderer in the alloted time slice
+		2) If you don't know how long it will take, don't do it on the Audio threads
+			- Jitter = non-reliable, inconsistent lag
+			- Consider Algorithm Complexity
+				- consider worst case
+				- consider which thread (UI vs Audio)
+			- Consider Data Structure Complexity
+				- std::vector is nice, use often: caches, other optimizations
+				- However, do not allocate or unallocate memory (append or remove)
+			- No Locks = for fear audio thread blocked by something else
+				- Use lock/wait free data structures
+				- Some primitives not as lock-free as they should be
+			- No Memory Allocation on audio thread = don't append or remove from a dynamic data structure in the audio thread for fear of memory management
+				- memory allocators use locks
+				- may not run in bounded time
+				- custom allocators
+					- boost::memory_pool
+					- dlmalloc 
+				- Pre-Allocate 
+				- Allocate on UI thread
+			- No Logging on the audio thread
+				- NSLog and printf lock-free
+				- Use a trusted logging library
+			- No OS Calls
+				- locks
+			- No Disk Access
+				- Probably locks
+				- Probably takes more time than buffer period
+			- No Network Activity
+			- Don't Trust 3rd party libraries	
+			- Languages:
+				- C & C++ = good fight
+				- Interpreted languages possibly too slow
+				- Grabage Collection bad = Java, Ruby, C#
+				- Ref-Counting = python, C++(RAII)
+		3) Respect Threads
+			- don't "presume" what is the real time high-priority "audio thread"
+			- Data Tearing
+				- Can't use a lock
+				- Use 2 Coefficients, use the old one until the new one is completely updated
+				- Use Atomic data
+					- int, bool, float, pointers
+			- Data Model
+				- lives on UI thread, renderable copy on audio thread
+		4) Chose the right data representation
+			- Floating Point
+				- Problems at infinitesimal or very large sizes
+				- Denormals = bad
+			- Fixed point
+				- clear over or under flow
+				- explicit about headroom
+
+"Evolution of Audio Plugins and Best Usability Practices, Gebre Waddell, JUCE Summit 2015" by JUCE on YouTube
+	- Analog Boxes
+		- Can become classic
+	- First ever software plugins were for a Univac MainFrame Word in the 70s
+	- First Audio Software Plugin was "Waves Q10" in 1992
+		- Still available to buy today!!!
+		- Can also become classic
+	- Retail sales of plugins are over $25 Million
+	- Open Source Community:
+		- Infinite Impulse Response Filters (Vinnie Falco DSP)
+		- LUFS metering
+		- Convolution Reverb
+		- Binaural Processing
+		- MusicDSP.org
+		- code.soundsoftware.ac.uk
+	- Trends:
+		- Less Features, Simplified, Helps with workflow
+		- Slide-out menus (Hide additional features)
+			- LUFSMeter/Projects/LUFSMeter/Source/gui/AnimatedSidePanel.cpp
+		- Flat design is trending over Skeuomorphic design in interfaces
+	- Raise the musical experience
+		- Solve Problems
+		- Efficient Tools
+		- High Quality
+
+
+---------------------------------------------------
+---------------------------------------------------

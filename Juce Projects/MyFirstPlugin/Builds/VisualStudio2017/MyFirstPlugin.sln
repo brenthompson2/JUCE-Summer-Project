@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2017
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyFirstPlugin - VST", "MyFirstPlugin_VST.vcxproj", "{80742F66-4929-266B-6F9D-697063B8E565}"
+	ProjectSection(ProjectDependencies) = postProject
+		{231D1E3A-EC6E-15DE-F37A-5D48E0568EC1} = {231D1E3A-EC6E-15DE-F37A-5D48E0568EC1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyFirstPlugin - Shared Code", "MyFirstPlugin_SharedCode.vcxproj", "{231D1E3A-EC6E-15DE-F37A-5D48E0568EC1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80742F66-4929-266B-6F9D-697063B8E565}.Debug|x64.Build.0 = Debug|x64
+		{80742F66-4929-266B-6F9D-697063B8E565}.Debug|x64.ActiveCfg = Debug|x64
+		{80742F66-4929-266B-6F9D-697063B8E565}.Release|x64.Build.0 = Release|x64
+		{80742F66-4929-266B-6F9D-697063B8E565}.Release|x64.ActiveCfg = Release|x64
+		{231D1E3A-EC6E-15DE-F37A-5D48E0568EC1}.Debug|x64.Build.0 = Debug|x64
+		{231D1E3A-EC6E-15DE-F37A-5D48E0568EC1}.Debug|x64.ActiveCfg = Debug|x64
+		{231D1E3A-EC6E-15DE-F37A-5D48E0568EC1}.Release|x64.Build.0 = Release|x64
+		{231D1E3A-EC6E-15DE-F37A-5D48E0568EC1}.Release|x64.ActiveCfg = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

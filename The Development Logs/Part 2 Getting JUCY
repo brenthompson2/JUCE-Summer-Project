@@ -1,0 +1,60 @@
+Brendan Thompson
+Development Log 2: Getting JUCY
+
+- Overview ---
+
+This log details my experience learning to code using the JUCE framework on Ubuntu and trying to get my first plugin to build and run
+
+------------------------------------------------
+------------------------------------------------
+
+- 07/24/17 ---
+
+Summary:
+	- Started my first project: an additive synthesizer
+Thoughts:
+	- 
+
+- I don't have any way to host audio plugins in linux. I need to check out the Introjucer
+
+- Attempting to get white noise to generate
+	- https://www.juce.com/doc/tutorial_simple_synth_noise
+
+
+
+
+------------------------------------------------
+------------------------------------------------
+
+- 07/23/17 ---
+
+Summary:
+	- Researched Advanced C++ techniques and started taking notes on an online book
+	- Followed along with a youtube tutorial
+	- Played around with the basic file structure
+Thoughts:
+	- I am so excited to finally start getting things off the ground!
+
+- Researched Advanced C++ Topics:
+	- Website cplusplus.bordoon.com/cplusplusadvice.html
+	- Online textbook "Tips and Tricks of the C++ Professionals" from www.bordoon.com/book/index.html
+- Let's Code!
+- I am going to start by following along with the 6th tutorial by The Audio Programmer
+	- This was the last tutorial in the series, some decent beginner work, but I still don't know anything about manipulating the Audio Buffer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

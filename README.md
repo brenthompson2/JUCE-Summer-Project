@@ -2,7 +2,7 @@
 
 Brendan Thompson
 README.md
-07/17/17
+07/24/17
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
@@ -22,20 +22,22 @@ and also Serum which is by Xfer Records.
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-			- Current Status - 07/17/17 ---
+			- Current Status - 07/24/17 ---
 			
-- It has been a slow and laborious process attempting to get my first plugin to build and run
-- After trying WDL-OL for 3 days I have switched to trying JUCE
-- Currently I am unable to get an add-on from WDL-OL or JUCE to compile on Visual Studio 2017 on my Windows 10 partition
-- I am going to attempt to use the VS2015 toolkit and/or possibly attempt to use JUCE on my linux partition and use gcc to compile it
-- I have been doing a lot of research into coding with JUCE
+- After struggling for a month trying to get both WDL-OL and JUCE plugins to build with Visual Studio 2017 on Windows 10
+	I switched to using JUCE on Ubuntu without any problems
+- In order to curb my desire to code while struggling to install everything, I took notes over a bunch of different tutorials
+	in areas including: Audio Programming, Advanced C++, and JUCE Development
+- I am now finally beginning to build my first synthesizer
+- I just created some files, re-organized the project, and built it successfully
+- Now I am working to produce my first sound with an Oscillator producing white noise
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
 			- The Development Logs ---
 			
-There are a few reasons that I am creating these detailed log:
+There are a few reasons that I am creating these detailed logs:
 	- It serves as a guide in case I ever need to redo any of the processes
 	- It is a notebook to review and reference while producing audio software
 	- There are summaries of research such as articles, tutorials, and videos that I can always reference
@@ -80,7 +82,7 @@ There are a few reasons that I am creating these detailed log:
 	2) It involves using Microsoft Visual Studio, which is software that I need to start getting acquanted with.
 		- So does JUCE
 	3) There is an in depth tutorial for the method online at http://www.martin-finke.de/blog/articles/audio-plugins-001-introduction/
-		- JUCE has a lot more than just 1 tutorial
+		- JUCE has significantly larger user base and way more tutorials/documentation
 		
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------

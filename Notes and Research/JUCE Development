@@ -1,0 +1,231 @@
+Brendan Thompson
+Research into JUCE plugin Development
+
+----------------------------------------------------------
+----------------------------------------------------------
+----------------------------------------------------------
+----------------------------------------------------------
+
+
+
+
+
+
+----------------------------------------------------------
+----------------------------------------------------------
+
+Juce Tutorial Series by "The Audio Programmer" 
+
+07/23/17 Following along with a tutorial
+
+- Juce Tutorial 06 - Customizing Dials and Sliders Using The Look And Feel Class
+	- First time following along with a tutorial
+	
+
+07/17/17
+
+- JUCE Fraimwork Tutorial 00 - Intro and Building your First Project by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=7n16Yw51xkI
+	- Book Source: Getting started with JUCE by Martin Robinson
+		- https://www.amazon.co.uk/Getting-Started-JUCE-Martin-Robinson/dp/1783283319
+	- Example Demo Project looks incredibly helpful: 3:30 or 7:40
+	- Accesses info on a class by cmd-clicking on an object in the code: 13:30
+
+- Juce Tutorial 01- The Document Window Class by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=OPSKfPWdr90&t=13s
+	- Summary = The basic application window
+	- Similar to https://juce.com/doc/tutorial_main_window
+	- https://www.juce.com/doc/classDocumentWindow
+	- The DocumentWindow 
+		- Name
+		- Background Color
+		- titleBarButtons (close, minimize, expand) uses a bitmask: 5:30
+	- View JUCE documentation online: 11:50
+		- can see what is inherited
+	- Use OS native title bar: 16:15
+
+- Juce Tutorial 02- The Main Content Component Window by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=WJYlJkLafFc&t=7s
+	- Summary = The main GUI
+	- https://www.juce.com/doc/classDocumentWindow
+	- Inherited Functions
+		- Paint = UI. Knobs, Sliders, Text, etc
+			- centering objects = justification: centered: 9:10
+		- Resized = When instantiated or resized
+	
+- Juce Tutorial 03- The Graphics Class, Parent & Child Components by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=rguyzHWbFwU
+	- Summary = Paint some basic shapes and text as child components of MainComponent
+	- Drawing a NewComponent on the screen as a child of MainComponent
+		1) Create NewComponent source and header files = 2:30
+		2) #include NewComponent.h in MainComponent.h = 4:00
+		3) Declare the NewComponent as a private object (child) to MainComponent = 4:20
+		4) Paint the NewComponenet: 5:36
+		5) AddAndMakeVisible(NewComponent) in constructor of MainComponent: 9:49
+		6) Draw NewComponent coordinates relative to parent = NewComponent.setBounds(getLocalBounds): 10:32
+	- Painting a path (closed shape or open ended): 23:00
+		- Path newPath;
+		- newPath.startNewSubPath(x, y);
+		- newPath.lineTo(x, y);
+		- newPath.closeSubPath();
+		- g.fillPath(newPath);
+		- g.strokePath(newPath, PathStrokeType(2.0f));
+	- Painting text: 37:00
+		- Font class for more customization
+			- Font theFont(*Font Name*, *type*, size);
+			- g.setFont(theFont);
+		- g.drawText("The Text", Xcord, Ycord, width, height, Justification::topLeft););
+	
+- Juce Tutorial 04 - The Slider & Rectangle Class by The Audio Programmer on YouTube
+	- https://www.youtube.com/watch?v=viR1Z7byTYw
+	- Summary = 
+	- Creating a dial (slider)
+		1) Declaration in MainComponent.h = Slider dial1;
+		2) addAndMakeVisable(dial1); in MainComponent constructor
+		3) chose the type (slider, dial, etc) = dial1.setSliderStyle(Slider::SliderStyle::Rotary); 6:40
+		4) setTextBoxStyle (above/below, readOnly = false so we can edit by typing, width, height);
+		5) synch coordinates with parent = dial1.setBounds(getLocalBounds());
+	- Use the rectangle class for laying out UI to ensure scalability 10:25
+		1) Rectangle<int> mainArea = getLocalBounds();
+		2) Rectangle<int> dialArea = area.removeFromBottom((area.getHeight() / 2)); = divided in half
+		3) dial1.setBounds(dialArea);
+		4) set a border = dial1.setBounds(dialArea.reduced(border)); 30:00
+
+
+
+----------------------------------------------------------
+----------------------------------------------------------
+--------------------- Misc. BY DATE ----------------------
+----------------------------------------------------------
+----------------------------------------------------------
+
+
+----------------------------------------------------------
+----------------------------------------------------------
+
+07/17/17:
+
+- Creating a Synthesizer in JUCE
+	- Example synth: https://www.youtube.com/watch?v=dYNx7PW5b9M
+
+
+----------------------------------------------------------
+----------------------------------------------------------
+
+07/16/17:
+	
+- "Manage your Projucer project"
+	- https://www.juce.com/doc/tutorial_manage_projucer_project
+	- Summary: Basics of the file structure and the projucer interface
+	- Anatomy of a projucer project:
+		- Source = C++ source code
+		- Builds = export targets (for IDEs)
+		- JuceLibraryCode = headers for JUCE library code. actual code in global JUCE folder
+	- File Explorer Tab
+		- file browser and basic C++ editor
+		- Always use the projucer to add, rename, or remove source files. Never do it in the IDE
+	- Modules Tab
+		- Settings = overview over all currently used modules
+			- set paths
+		- individual module setting also possible
+			- versions, licence, paths to additional dependencies used
+	- Exporters Tab
+		- all exporter targets and build settings
+			- compiler and linker flags, platform specifics
+		- add or delete exporter targets
+		- Change to 64-bit versions:
+			1) Duplicate configurations and rename as Debug64 and Release64
+			2) change confifiguration build settings Architecture from 32-bit to 64-bit
+
+- "Create a basic Audio/MIDI plugin Part 1: Setting Up"
+	- https://www.juce.com/doc/tutorial_create_projucer_basic_plugin
+	- Summary: set up computer, create first projucer project, debug it with built-in host
+	- Download JUCE
+	- Download and Install plugin dependencies
+	- Create an audio plug-in
+	- set up built-in plug-in host
+		- open the binary produced by the IDE and graphical node editor should open
+		- Options > Edit the list of available plugins
+			- scan for new or updated VST plug-ins
+				- automatically copied to ~/Library/Audio/Plug-Ins/VST
+		- Options > Change the audio device settings
+			- ensure inputs and outputs are correct
+		- Insert plugin = Right click > "yourcompany" > MyPlug-In
+		- connect midi and audio nodes
+	- Launch plugin GUI by double clicking
+	- Enable step-through debugging (Xcode example)
+		- build and run in IDE will automatically launch the host
+		- Product > Scheme > Edit Scheme
+		- in Run select Other
+		- Locate Plugin Host.app binary
+		- Ensure "Debug Executable" is ticked			
+
+- "Create a basic Audio/MIDI plugin Part 2: Coding your plug-in"
+	- Orientation of newly created audio plug-in project:
+		- Classes:
+			- PluginProcessor = audio and midi io & processing
+				- only 1
+				- processBlock() = produce and receive audio and midi 
+			- PluginEditor = GUI controls and visualisations
+				- multiple with references to the one processor
+				- set and get information on the processor thread
+				- paint() = draw extra controls and custom GUI components
+				- setSize(x,y) = method for window size
+			- Consider Processor as parent to Editor
+	- Create a Slider object
+		1) Create the object
+		- in the editor header create a private object [CODE] "Slider midiVolume;"
+		- AudioProcessorEditor() ~= Main()
+			[CODE]
+			TutorialPluginAudioProcessorEditor::TutorialPluginAudioProcessorEditor (TutorialPluginAudioProcessor& p)
+  				: AudioProcessorEditor (&p), processor (p)
+			{
+    				// This is where our plugin’s editor size is set.
+    				setSize (200, 200);
+ 
+    				// these define the parameters of our slider object
+    				midiVolume.setSliderStyle (Slider::LinearBarVertical);
+    				midiVolume.setRange(0.0, 127.0, 1.0);
+    				midiVolume.setTextBoxStyle (Slider::NoTextBox, false, 90, 0);
+    				midiVolume.setPopupDisplayEnabled (true, this);
+   				 midiVolume.setTextValueSuffix (" Volume");
+    				midiVolume.setValue(1.0);
+ 
+    				// this function adds the slider to the editor
+    				addAndMakeVisible (&midiVolume);
+			}
+		- resized() = called upon initialisation and resizing
+			- set size and position of the slider
+		- paint() = Change text from "Hello World" to "Midi Volume"
+		- ensure that it runs
+		2) Code the object
+		- Create new public variable in processor class [CODE] "float noteOnVel;" (note on velocity
+		- add inheritance and default callback function to the Editor header
+			[CODE]
+			class TutorialPluginAudioProcessorEditor : public AudioProcessorEditor,
+                                          			   private Slider::Listener
+			{
+			public:
+   				TutorialPluginAudioProcessorEditor (TutorialPluginAudioProcessor&);
+    				~TutorialPluginAudioProcessorEditor();
+
+    				void paint (Graphics& g) override;
+ 
+    				void resized() override;
+ 
+			private:
+   				void sliderValueChanged (Slider* slider) override;
+				...
+			};
+		- add listener to volume sslider in the Editor
+			- [CODE] "midiVolume.addListener (this)"
+		- add listener to public processor volume variable
+			[CODE]
+			void TutorialPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
+			{
+				processor.noteOnVel = midiVolume.getValue();
+			}
+		3) Modify MIDI notes
+			- create new MidiBuffer processedMidi
+			- iterate through buffer messages (m) and set noteOn velocities to the slider value
+			- processedMidi.addEvent(m, time)
