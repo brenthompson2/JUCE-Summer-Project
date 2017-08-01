@@ -8,20 +8,317 @@ This log details my experience learning to code using the JUCE framework on Ubun
 ------------------------------------------------
 ------------------------------------------------
 
+- 07/28/17 ---
+
+Summary:
+	- Researched some digital signal processing information
+	- Utilized the AudioProcessor and AudioProcessorEditor Class to communicate date between the processor and the editor
+		- Have been able to compile the project but don't know how to instantiate those two objects
+	- Found and analyzed an advanced juce tutorial from February 2013: https://artandlogic.com/2013/02/developing-audio-applications-with-juce-part-1/
+Thoughts:
+	- The AudioProcessor and AudioProcessorEditor classes are awesome ways to communicate data between the MainAudioProcessor code and the UserInterface
+	- I need to utilize AudioProcessorGraph to manage a series of AudioProcessors
+
+
+- Archive of DSP code: www.musicdsp.org
+- I need to find some more example JUCE applications
+
+- Managing the data with the ValueTree & AudioProcessorValueTreeState class
+	- https://www.juce.com/doc/tutorial_audio_processor_value_tree_state
+	- AudioProcessorValueTreeState is a ValueTree with utility child classes for connecting parameters directly to UI components
+		- Need to look into attaching it to the UI with Listener or SliderAttachment
+		- Converts easily to XML for saving presets
+	- a AudioProcessorValueTreeState object must be:
+		A) attached to only one processor
+		B) have the same lifetime as the processor
+	- This didn't work for me naturally because MainComponent.cpp inherits from AudioAppComponent, not AudioProcessor
+	0) In the MainAudioProcessor: inherit from AudioProcessor:
+		"class MainAudioProcessor : public AudioProcessor"
+	1) declare the value tree object in the processor class: "AudioProcessorValueTreeState parameters" in the header
+	2) set it up in the constructor with a reference to the AudioProcessor subclass and a pointer to an UndoManager
+		"
+		MainComponent::MainComponent()
+	    :
+	        ...
+	        parameters (*this, nullptr)
+	    {
+	    "
+	3) Configure your parameters in AP with createAndAddParameter()
+		"
+		parameters.createAndAddParameters("volumeLevel", // ID such as a variable name
+                                        "Volume",       // name for display
+                                        String(),       // label for suffix (dB, Hz)
+                                        NormalisableRange<float> (0.0f, MAX_VOLUME),
+                                        0.25,           // default value
+                                        nullptr, nullptr);	// for converting between text and the value
+        "
+    4) Initialize the object in the AP constructor:
+    	"parameters.state = ValueTree (Identifier ("AdditiveSynth"));"
+    5) In the UI: inherit from AudioProcessorEditor:
+    	"class UserInterface : public AudioProcessorEditor"
+    	- which also inherits from the Component Class
+    6) Declare as private members a pointer to the value tree and also the attachment objects:
+    	"
+    	AudioProcessorValueTreeState& valueTreeState;
+	    Slider mainVolumeSlider;
+	    Label mainVolumeLabel;
+	    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> volumeAttachment;
+	    "
+    7) Link the Processor with the Editor in the UI constructor & Initialize the values:
+		"
+		UserInterface(AudioProcessor& parent, AudioProcessorValueTreeState& parentVTS)
+			: AudioProcessorEditor (parent),
+			valueTreeState (parentVTS)
+		{
+		"
+	8) Attach the sliders to the valueTree parameters in the UI constructor:
+		"
+		volumeAttachment = new AudioProcessorValueTreeState::SliderAttachment (valueTreeState,
+													"volumeLevel", mainVolumeSlider);
+		"
+	9) In the MainAudioProcessor header: instantiate the UserInterface by overwriting the createEditor function and changing hasEditor()
+		"
+		AudioProcessorEditor* createEditor() override { return new UserInterface (*this, parameters); }
+		bool hasEditor() const override 		{return true;	}
+		"
+
+- The source files & How I am managing data communication between them:
+	A) Main.cpp
+	B) MainComponent.cpp
+		- Inherits from AudioAppComponent
+		- used for I/O
+	C) AudioProcessor.cpp
+		- Inherits from AudioProcessor
+		- Use AudioProcessorValueTreeState to store parameters
+			- inherits from Listener and SliderAttachment
+	D) UserInterface.cpp
+		- Inherits from AudioProcessorEditor
+	- Parameters passed back and forth between C & D using the AudioProcessorValueTreeState
+
+- Advanced JUCE Tutorial:
+	- https://artandlogic.com/2013/02/developing-audio-applications-with-juce-part-1/
+	1) The Classes that make up an Audio Application
+		A) AudioDeviceManager:
+			- The application should have a single instance
+			- encapsulates all pertinent audio and midi hardware available
+			- for audio to start flowing, need to pass this object a pointer to another object that implements the AudioIODeviceCallback interface
+			- Once the callback is added to the device manager it is called repeatedly with buffers of audio & midi data that needs to be processed
+		B) AudioProcessor:
+			- Used for processingBlocks of audio
+		C) AudioProcessorGraph:
+			- is an AudioProcessor that holds other AudioProcessors and connects their I/O in arbitrary topologies
+			***** Rewarding to spend time studying this class
+		D) AudioProcessorPlayer:
+			- Glue between ADM and APG
+			- AudioIODeviceCallback object that can be passed to the AudioDeviceManager
+			- Has an AudioProcessor
+			*** Create an instance of AudioProcessorGraph and pass it to the AudioProcessorPlayer::setProcessor()
+		E) AudioProcessorGraph::AudioGraphIOProcessor
+			- can instantiate as special I/O nodes for putting audio into the processor graph or sending it back out
+
+------------------------------------------------
+------------------------------------------------
+
+- 07/27/17 ---
+
+Summary:
+	- Tried to fix the problem from last time where float assignment cause no sound to play from the synth 
+		(float unusedFloat = 0.25f;)
+		- ended up making the temporary variable into a private member
+	- Made a working sine wave oscillator
+	- Attempting to get the code under MainComponent to work with the UserInterface files
+Thoughts:
+	- I have pretty much reached the end of the JUCE tutorials. It looks like I need to learn more digital signal processing
+
+- Troubleshooting the inability to do assignment:
+	**** Would the program work if I make the temporary "nextSample" a global member variable?
+		- Terrible in theory! Silly to make a temp variable into a class member
+		- This solution worked with nextSample and volumeLevel both being class private member variables
+		"
+		nextSample = ((randomGen.nextFloat() * 2.0f - 1.0f) * volumeLevel);
+        buffer[sample] = nextSample;
+        "
+		- This makes me think it has something to do with allocating memory on the audio thread
+		- Lets see if I declare the variable in prepareToPlay() if it pops back off the stack out of scope...
+			- Yup, out of scope
+		- I guess I am going to have to work with this ugly fix until I understand whats going on
+
+- Turning it into a sine wave generator:
+	- https://www.juce.com/doc/tutorial_sine_synth
+	- Simulating a sine wave:
+		- use std::sin()
+			- "Most synthesis applications and plug-ins are likely not to use std::sin() functions"
+			- see: wavetable synthesis juce tutorial
+		- store the state by using the currentPhaseAngle and the size of the change (delta)
+			- dependant on sample rate and desired frequency
+	- The Code:
+		1) Create some member variables in the header: 
+			double currentSampleRate, currentAngle, angleDelta, desiredFrequency;
+		2) Write a function that updates the angleDelta
+			"
+			void updateAngleDelta(){
+		        // number of cycles necessary per each output sample, multiplied by length of sine wave cycle (2pi radians)
+		        const double cyclesPerSample = desiredFrequency / currentSampleRate;    
+		        angleDelta = cyclesPerSample * 2.0 * double_Pi;
+	    	}
+			"
+		3) Store the output sample rate and initialize angleDelta in prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+			"
+			currentSampleRate = sampleRate;
+			updateAngleDelta();
+			" 
+		4) Update angleDelta whenever the frequency slider is moved in the SliderValueChanged() overwriten Listener function
+			"
+		    if (slider == &frequencySlider){
+		    	desiredFrequency = frequencySlider.getValue();
+		        if (currentSampleRate > 0.0){
+		            updateAngleDelta();
+		        }
+		    }
+		    "
+		5) Use the value to manipulate the value of nextSample:
+			"
+			nextSample = (float) std::sin (currentAngle);	// calculate the sine fn for the current angle
+            currentAngle += angleDelta;	// increment the angle for the next sample
+            buffer[sample] = nextSample * volumeLevel;
+            "
+        6) Setup the frequency Slider in the main constructor
+        	- skew makes it feel more natural since the change is applied logarithmicly (500 is now the midpoint)
+        		frequencySlider.setSkewFactorFromMidPoint(500.0);
+   	- Smoothing out the changes in frequency to reduce artifacts
+   		1) Create another member variable, double currentFrequency;
+   		2) Initialize the values in the constructor in an interesting way:
+   			"
+			MainContentComponent::MainContentComponent()
+			:
+			    currentSampleRate (0.0),
+			    currentAngle(0.0),
+			    angleDelta(0.0),
+			    currentFrequency(500.0),
+			    desiredFrequency(currentFrequency)
+			{
+			    setSize (800, 600);
+			    //...
+   			"
+   		3) Change the way synthesis works:
+   			- if (desiredfrequency != currentFrequency) then calculate the increment, apply it, and updateAngleDelta()
+   			- else do what you did before
+   		4) Stop sliderValueChanged() frequencySlider part from calling updateAngleDelta()
+   		- Problem: Only getting sound when changing frequency, not constantly
+   			- scrapping most of this but keeping the initialized values idea
+   			- I am sure I will have to revisit this when I actually need to smooth something out like this
+
+- The Wavetable Synthesis tutorial doesn't exist yet...
+
+- Advanced UI Techniques:
+	- https://www.juce.com/doc/tutorial_rectangle_advanced
+	- I am going to try to code this in UserInterface.cpp and link it up with the code under MainComponent.cpp
+	- Layout by subdividing rectangles:
+
+
+------------------------------------------------
+------------------------------------------------
+
 - 07/24/17 ---
 
 Summary:
 	- Started my first project: an additive synthesizer
+	- Create a white noise generator
+	- Attempted to control the volume with a slider but for some reason the act of assigning a value to a float causes the audio to not play. I can create a variable, I just can't assign a value to it
 Thoughts:
-	- 
+	- I am excited to turn this white noise generator into a sine wave generator
+	- If I can't assign a value to a float (float unusedFloat = 0.25f;) then idk what the hell to do
+Take Aways:
+	- Code of a synthesizer
+	- Random class used (random num between 0 & 1)
 
 - I don't have any way to host audio plugins in linux. I need to check out the Introjucer
 
 - Attempting to get white noise to generate
 	- https://www.juce.com/doc/tutorial_simple_synth_noise
+	- Easy enough: Basically you access the Audio Buffer stored in bufferToFill, an object of type AudioSourceChannelInfo
+		- Then for each channel just go through every sample and fill it with random values
+	"
+	// For every channel in the buffer, fill every sample with random values (random is between 0-1)
+    Random randomGen;
+    int numChannels = bufferToFill.buffer->getNumChannels();
+    int numSamples = bufferToFill.numSamples;
+    for (int channel = 0; channel < numChannels; channel++){
+        float* const buffer = bufferToFill.buffer -> getWritePointer (channel, bufferToFill.startSample);
+        for (int sample; sample < numSamples; sample++){
+            buffer[sample] = (randomGen.nextFloat() * 0.25f - 0.125f);
+        }
+    }
+	"
 
+- Controlling the output of the synthesizer:
+	- https://www.juce.com/doc/tutorial_synth_level_control
+	- Well I don't want to use their sample project so I am going to try to make my own
+	- Getting a slider in there:
+		- From my JUCE Development notes on The Audio Programmer's 4th episode:
+		"
+		- Creating a dial (slider)
+			1) Declaration in MainComponent.h = Slider dial1;
+			2) addAndMakeVisable(dial1); in MainComponent constructor
+			3) chose the type (slider, dial, etc) = dial1.setSliderStyle(Slider::SliderStyle::Rotary); 6:40
+			4) setTextBoxStyle (Slider::TextEntryBoxPosition::TextBoxBelow, readOnly = false so we can edit by typing, width, height);
+			5) synch coordinates with parent = dial1.setBounds(getLocalBounds());
+		"
 
+	**** Stupid Error: If I assign a value to a float anywhere in the fn it stops the audio from being produced
+		- This Works:
+            buffer[sample] = (randomGen.nextFloat() * 0.25f - 0.125f);
+		- This Doesn't Work:
+			float newValue = (randomGen.nextFloat() * 0.25f - 0.125f);
+            buffer[sample] = newValue;
+        - This Still Outputs White Noise:
+	        "
+	        float unusedFloat;
+		    // For every channel in the buffer, fill every sample with random values
+		    Random randomGen;
+		    int numChannels = bufferToFill.buffer->getNumChannels();
+		    int numSamples = bufferToFill.numSamples;
+		    for (int channel = 0; channel < numChannels; channel++){
+		        float* const buffer = bufferToFill.buffer -> getWritePointer (channel, bufferToFill.startSample);
+		        for (int sample; sample < numSamples; sample++){
+		            buffer[sample] = (randomGen.nextFloat() * 2.0f - 1.0f);
+		        }
+		    }
+		    "
+		- This Doesn't Work:
+	        float unusedFloat = 2.0f;
+		    // For every channel in the buffer, fill every sample with random values
+		    Random randomGen;
+		    int numChannels = bufferToFill.buffer->getNumChannels();
+		    int numSamples = bufferToFill.numSamples;
+		    for (int channel = 0; channel < numChannels; channel++){
+		        float* const buffer = bufferToFill.buffer -> getWritePointer (channel, bufferToFill.startSample);
+		        for (int sample; sample < numSamples; sample++){
+		            buffer[sample] = (randomGen.nextFloat() * 2.0f - 1.0f);
+		        }
+		    }
+		    "
+		- This Doesn't Work:
+			"
+	        float unusedFloat;
+	        unusedFloat = 2.0f;
+		    ...
+		    "
+		- Their code from the tutorials doesnt work either:
+			- const float level = (float) MainVolumeSlider.getValue(); (synth_level_control)
+		- Without even using the variable, just the act of assigning it a value causes the audio to stop being produced. WTF
 
+    - Listening to slider values:
+		- https://www.juce.com/doc/tutorial_slider_values
+    	1) add "public Slider::Listener" to the list of child components of MainContentComponent in the header
+    	2) add "void sliderValueChanged (Slider* slider) override;"" to the header to overide this Listener fn
+    	3) overide the sliderValueChange function in the .cpp file
+    		- "void MainContentComponent::sliderValueChanged (Slider* slider){..."
+    	4) attach the listener to the object during the contructor: "MainVolumeSlider.addListener(this);""
+    	5) In sliderValueChanged, use MainVolumeSlider.getValue();
+
+    - Side Note: attach labels to components
+    	- MainVolumeLabel.attachToComponent (&MainVolumeSlider, false);	// true = left, false = above
 
 ------------------------------------------------
 ------------------------------------------------

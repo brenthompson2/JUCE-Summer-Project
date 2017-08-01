@@ -6,10 +6,18 @@
               jucerVersion="5.0.2">
   <MAINGROUP id="VbQxOX" name="AdditiveSynth">
     <GROUP id="{FC24B3D3-0AD8-8913-5831-D89C33F27009}" name="Source">
+      <FILE id="Orn5r4" name="MainAudioProcessor.cpp" compile="1" resource="0"
+            file="Source/MainAudioProcessor.cpp"/>
+      <FILE id="h7UCXt" name="MainAudioProcessor.h" compile="0" resource="0"
+            file="Source/MainAudioProcessor.h"/>
       <FILE id="bBBgML" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="v0vl4M" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="jZXOAv" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="JC1HGI" name="SynthForAdding.cpp" compile="1" resource="0"
+            file="Source/SynthForAdding.cpp"/>
+      <FILE id="OVNzdM" name="SynthForAdding.h" compile="0" resource="0"
+            file="Source/SynthForAdding.h"/>
       <FILE id="R5XY8l" name="UserInterface.cpp" compile="1" resource="0"
             file="Source/UserInterface.cpp"/>
       <FILE id="laK4gl" name="UserInterface.h" compile="0" resource="0" file="Source/UserInterface.h"/>

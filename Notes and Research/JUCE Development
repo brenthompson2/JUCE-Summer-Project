@@ -60,7 +60,7 @@ Juce Tutorial Series by "The Audio Programmer"
 		1) Create NewComponent source and header files = 2:30
 		2) #include NewComponent.h in MainComponent.h = 4:00
 		3) Declare the NewComponent as a private object (child) to MainComponent = 4:20
-		4) Paint the NewComponenet: 5:36
+		4) Paint the NewComponent: 5:36
 		5) AddAndMakeVisible(NewComponent) in constructor of MainComponent: 9:49
 		6) Draw NewComponent coordinates relative to parent = NewComponent.setBounds(getLocalBounds): 10:32
 	- Painting a path (closed shape or open ended): 23:00
@@ -81,9 +81,9 @@ Juce Tutorial Series by "The Audio Programmer"
 	- Summary = 
 	- Creating a dial (slider)
 		1) Declaration in MainComponent.h = Slider dial1;
-		2) addAndMakeVisable(dial1); in MainComponent constructor
+		2) AddAndMakeVisible(dial1); in MainComponent constructor
 		3) chose the type (slider, dial, etc) = dial1.setSliderStyle(Slider::SliderStyle::Rotary); 6:40
-		4) setTextBoxStyle (above/below, readOnly = false so we can edit by typing, width, height);
+		4) setTextBoxStyle (TextBoxAbove/TextBoxBelow, readOnly = false so we can edit by typing, width, height);
 		5) synch coordinates with parent = dial1.setBounds(getLocalBounds());
 	- Use the rectangle class for laying out UI to ensure scalability 10:25
 		1) Rectangle<int> mainArea = getLocalBounds();

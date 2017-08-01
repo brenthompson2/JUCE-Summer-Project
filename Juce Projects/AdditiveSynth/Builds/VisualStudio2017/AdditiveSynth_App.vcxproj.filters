@@ -370,10 +370,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\MainAudioProcessor.cpp">
+      <Filter>AdditiveSynth\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>AdditiveSynth\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
+      <Filter>AdditiveSynth\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\SynthForAdding.cpp">
       <Filter>AdditiveSynth\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UserInterface.cpp">
@@ -2139,7 +2145,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\MainAudioProcessor.h">
+      <Filter>AdditiveSynth\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">
+      <Filter>AdditiveSynth\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\SynthForAdding.h">
       <Filter>AdditiveSynth\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UserInterface.h">

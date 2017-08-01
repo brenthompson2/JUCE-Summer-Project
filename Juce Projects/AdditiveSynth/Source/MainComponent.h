@@ -2,7 +2,7 @@
   ==============================================================================
 
     MainComponent.h
-    Created: 24 Jul 2017 4:12:57pm
+    Updated: 27 Jul 2017
     Author:  Brendan Thompson
 
   ==============================================================================
@@ -12,7 +12,12 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class MainContentComponent   : public AudioAppComponent
+// Constants
+
+// Structs
+
+class MainContentComponent   : public AudioAppComponent,
+                            public Slider::Listener
 {
 public:
 
@@ -35,12 +40,21 @@ public:
 	void paint (Graphics& g) override;
 	void resized() override;
 
+//==============================================================================
+// Slider::Listener Functions
+
+    void sliderValueChanged (Slider* slider) override;
+
 private:
-    //==============================================================================
-    // Your private member variables go here...
 
-	int numChannels;
-    int numSamples;
 
+//==============================================================================
+// Private Functions:
+
+
+//==============================================================================
+// Private Members:
+
+    // This thing
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

@@ -12,11 +12,13 @@ README.md
 			
 For the summer of 2017 I am attempting to create a VST plug-in synthesizer 
 that can be loaded into music production software. 
+
 Follow along in the Development Logs as I teach myself the advanced topics necessary, 
 laugh as I struggle through the nitty-gritty of troubleshooting EVERYTHING, 
 and watch as my software designing process unravels. 
+
 For a better description of what I intend to create, some of the most popular 
-VSTs include both MASSIVE and Reaktor, both of which are by Native Instruments, 
+VST synthesizers include both MASSIVE and Reaktor, both of which are by Native Instruments, 
 and also Serum which is by Xfer Records.
 
 ------------------------------------------------------------------------------
