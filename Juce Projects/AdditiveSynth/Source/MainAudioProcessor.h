@@ -1,71 +1,86 @@
-/*
-  ==============================================================================
+// /*
+//   ==============================================================================
 
-    MainAudioProcessor.h
-    Created: 28 Jul 2017 5:50:50pm
-    Author:  Brendan Thompson
+//     MainAudioProcessor.h
+//     Created: 28 Jul 2017 5:50:50pm
+//     Author:  Brendan Thompson
 
-  ==============================================================================
-*/
+//   ==============================================================================
+// */
 
-#pragma once
+// #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "UserInterface.h"
+// #include "../JuceLibraryCode/JuceHeader.h"
 
-// Constants
-    const float MAX_VOLUME = 0.5f;
-    const float MIN_FREQUENCY = 50.0f;
-    const float MAX_FREQUENCY = 5000.0f;
+// // Symbolic Constants
+//     const float MAX_VOLUME = 0.5f;
+//     const float MIN_FREQUENCY = 50.0f;
+//     const float MAX_FREQUENCY = 5000.0f;
 
-// Structs
+// // Structs
 
-class MainAudioProcessor   : public AudioProcessor
-{
-public:
+// class MainContentComponent   : public AudioAppComponent,
+//                             public Slider::Listener
+// {
+// public:
 
-//==============================================================================
-// Constructor & Destructor
+// //==============================================================================
+// // Constructor & Destructor
 
-	MainAudioProcessor();
-	~MainAudioProcessor();
+//     MainContentComponent();
+//     ~MainContentComponent();
 
-//==============================================================================
-// Public Audio Functions
+// //==============================================================================
+// // Public Audio Functions
 
-	void prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock) override;
-	void processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages) override;
-	void releaseResources() override;
+//     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+//     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+//     void releaseResources() override;
 
-//==============================================================================
-// Public UI Functions
+// //==============================================================================
+// // Public UI Functions
 
-	AudioProcessorEditor* createEditor() override { return new UserInterface(*this, parameters); }
-	bool hasEditor() const override 		{return true;	}
+//     void paint (Graphics& g) override;
+//     void resized() override;
 
-private:
+// //==============================================================================
+// // Slider::Listener Functions
+
+//     void sliderValueChanged (Slider* slider) override;
+
+// private:
 
 
-//==============================================================================
-// Private Functions:
+// //==============================================================================
+// // Private Functions:
 
-	void updateAngleDelta();
+//     void updateAngleDelta();
 
 
-//==============================================================================
-// Private Members:
+// //==============================================================================
+// // Private Members:
 
-	// General Synthesis
-	Random randomGen;
-	float volumeLevel;
-    float nextSample;
+//     // Rectangles
+//     TextButton header;
+//     TextButton footer;
+//     TextButton sidebar;
+//     TextButton contentOne;
+//     TextButton contentTwo;
 
-	// Sine Wave Synthesis
-    double currentSampleRate, currentAngle, angleDelta, currentFrequency;
+//     // Sliders
+//     Slider mainVolumeSlider;
+//     Label mainVolumeLabel;
+//     Slider frequencySlider;
+//     Label frequencyLabel;
 
-    // Value Tree
-    AudioProcessorValueTreeState parameters;
+//     // General Synthesis
+//     Random randomGen;
+//     float volumeLevel;
+//     float nextSample;
 
-    // This thing
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainAudioProcessor)
-};
+//     // Sine Wave Synthesis
+//     double currentSampleRate, currentAngle, angleDelta, currentFrequency;
+
+//     // This thing
+//     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
+// };

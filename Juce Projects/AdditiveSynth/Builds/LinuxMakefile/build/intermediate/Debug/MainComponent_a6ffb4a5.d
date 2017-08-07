@@ -468,4 +468,4 @@ build/intermediate/Debug/MainComponent_a6ffb4a5.o: \
  ../../../../../JUCE/modules/juce_opengl/utils/juce_OpenGLAppComponent.h \
  ../../../../../JUCE/modules/juce_video/juce_video.h \
  ../../../../../JUCE/modules/juce_video/capture/juce_CameraDevice.h \
- ../../Source/MainAudioProcessor.h ../../Source/UserInterface.h
+ ../../Source/SynthForAdding.h

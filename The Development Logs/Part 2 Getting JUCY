@@ -8,6 +8,221 @@ This log details my experience learning to code using the JUCE framework on Ubun
 ------------------------------------------------
 ------------------------------------------------
 
+- 08/06/17 ---
+
+Summary:
+	- Started to make the AdditiveSynth without all those classes
+	- Struggling to access a pointer to an object of my SynthForAdding class
+		- Attempting to set the bounds equal to the bounds of a rectangle
+Thoughts:
+	- Need to stop using TextButtons as UI elements
+
+- Interesting: an AudioAppComponent, the base class for MainComponent, has a public attribute of type AudioDeviceManager called deviceManager
+
+
+
+------------------------------------------------
+------------------------------------------------
+
+- 08/05/17 ---
+
+Summary:
+	- Worked on the AudioManagementTemplate
+	- Thinking about ditching the AudioDeviceManager, AudioProcessorPlayer, and AudioProcessorGraph since my MainComponent can pretty much be its own data structure to manage what the graph would
+Thoughts:
+	- I think the AudioManagementTemplate might be unnecessary for just trying to create a synthesizer with components such as a few oscillators, maybe an lfo, high and low pass filters, ADSR control, etc.
+	- Perhaps I will have to revisit the AudioDeviceManager, AudioProcessorPlayer, and AudioProcessorGraph again in the future, but my program seems like it should pretty much be its own data structure to manage the flow of the individual components
+	- It might make it harder to create an XML that stores preset data for the whole synthesizer
+
+- The AudioManagementTemplate:
+	- MainComponent =
+	- BasicAudioProcessor:
+	- BasicAudioProcessorEditor:
+
+	- Creating the mainAudioDeviceManager:
+		1) Declare in header as private member:
+			- AudioDeviceManager mainAudioDeviceManager;
+		2) Initialize in constructor:
+			- mainAudioDeviceManager.initialiseWithDefaultDevices(NUMBER_INPUT_CHANNELS, NUMBER_OUTPUT_CHANNELS);
+
+	- Creating the mainAudioProcessorPlayer & Linking to mainAudioDeviceManager
+
+	- Linking the Processor w/ the Editor:
+		A) BasicAudioProcessor.h:
+			1) inherit from AudioProcessor
+			2) override the Editor functions:
+				- bool hasEditor() const override 					{return true; }
+				- AudioProcessorEditor* createEditor() override;
+		B) BasicAudioProcessor.cpp:
+			1) include both headers (processor & editor)
+			2) create the editor:
+				- AudioProcessorEditor* BasicAudioProcessor::createEditor(){ return new BasicAudioProcessorEditor (*this);}
+		C) BasicAudioProcessorEditor.h:
+			1) inherit from AudioProcessorEditor
+			2) add processor as constructor parameter:
+				- BasicAudioProcessorEditor (BasicAudioProcessor&);
+		E) BasicAudioProcessorEditor.cpp:
+			1) include both headers (processor & editor)
+			2) Construct the AudioProcessorEditor:
+				- BasicAudioProcessorEditor::BasicAudioProcessorEditor(BasicAudioProcessor& owner) : AudioProcessorEditor (owner)	{ }
+
+
+
+
+------------------------------------------------
+------------------------------------------------
+
+- 08/03/17 ---
+
+Summary:
+	- Conducted more research into the classes used for managing Audio:
+		- AudioDeviceManager, AudioProcessorPlayer, AudioProcessorGraph, AudioProcessor, AudioProcessorEditor
+	- Worked on the AudioManagementTemplate project that utilizes these main audio classes
+Thoughts:
+	- The Audio plugin host example JUCE project is actually for hosting VSTs that I create
+	- I think the highest up the class ladder that I will need to go is the AudioProcessorGraph which manages multiple processors
+		- I bet only super elaborate programs need an AudioDeviceManager which manages multiple players/graphs
+
+- AudioProcessorGraph:
+	- ../JUCE/examples/audio plugin host/Source/FilterGraph
+		- example also uses XML Methods for saving presets
+		- Side Note: I think the Audio Plugin Host is used for hosting / testing VST plugins that are created with JUCE
+		1) Private Variable in header: AudioProcessorGraph graph;
+		2) Public Method in header: AudioProcessorGraph& getGraph() noexcept         { return graph; }
+			- actually I think this is just a method and does nothing for instantiation
+			- see: FilterIOConfigurationWindow::~FilterIOConfigurationWindow
+		3) Add a listener in the constructor: graph.addListener(this);
+		4) free the graph in the destructor: graph.clear();
+		5) to get a node: graph.getNode(index);
+	- Where is the graph instantiated!?!?!?
+	- https://www.juce.com/doc/classAudioProcessorGraph
+	- an APG "Node" is a Processor (addNode() to attach processors to the graph)
+
+- AudioDeviceManager
+	- https://www.juce.com/doc/classAudioDeviceManager
+		-"To use an [ADM], create one, and use initialise() to set it up. Then call addAudioCallback() to register your audio callback with it, and use that to process your audio"
+		- multiple callbacks = same input, summed output
+
+- AudioProcessor
+	- ../JUCE/examples/audio plugin host/Source/GraphEditorPanel
+	- AudioProcessor* processor = node->getProcessor();
+		- node from graph
+    - AudioProcessorEditor* ui = nullptr;
+    ***** ../JUCE/examples/audio plugin demo/PluginProcessor.cpp
+	- Example Constructor:
+	    "
+	    JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
+		    : AudioProcessor (getBusesProperties()),
+			    lastUIWidth (400),
+			    lastUIHeight (200),
+			    gainParam (nullptr),
+			    delayParam (nullptr),
+			    delayPosition (0)
+		{
+		    lastPosInfo.resetToDefault();
+
+		    // This creates our parameters. We'll keep some raw pointers to them in this class,
+		    // so that we can easily access them later, but the base class will take care of
+		    // deleting them for us.
+		    addParameter (gainParam  = new AudioParameterFloat ("gain",  "Gain",           0.0f, 1.0f, 0.9f));
+		    addParameter (delayParam = new AudioParameterFloat ("delay", "Delay Feedback", 0.0f, 1.0f, 0.5f));
+
+		    initialiseSynth();
+		}
+		"
+	- Example Processor:
+		1) Private Method "process":
+			"
+			template <typename FloatType>
+			JuceDemoPluginAudioProcessor::process(AudioBuffer<FloatType>& buffer,
+							MidiBuffer& midiMessages,
+							AudioBuffer<FloatType>& delayBuffer);
+			"
+		2) Override processBlock function:
+			"
+			void processBlock (AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override
+    		{
+		        process (buffer, midiMessages, delayBufferDouble);
+		    }
+		    "
+		3) Declare Private DelayBuffer Member for future use:
+			AudioBuffer<double> delayBufferDouble;
+
+- AudioProcessorEditor:
+	- instantiated by the AudioProcessor
+
+
+- AudioProcessorPlayer
+
+- Creating my AudioManagementTemplate project
+	- The Files:
+		A) Main: Creates the main JUCE Application
+		B) MainComponent:
+			- AudioDeviceManager & AudioProcessorGraph
+			- Xml
+			- #include "BasicAudioProcessorEditor.h"
+			- #include "BasicAudioProcessor.h"
+		C) BasicAudioProcessor:
+			- AudioProcessor
+			- #include "BasicAudioProcessorEditor.h"
+		D) BasicAudioProcessorEditor:
+			- AudioProcessorEditor
+
+	- Creating an AudioDeviceManager:
+		1) In MainComponent.h declare the object:
+			AudioDeviceManager MainAudioDeviceManager();
+		2) In MainComponent.cpp instantiate the object:
+			- How?
+
+	- Creating an AudioProcessorPlayer:
+		1) Somehow instantiate the graph and attach it to the AudioDeviceManager:
+		2) Set the processor to the graph:
+			mainAudioPlayer.setProcessor(mainAudioGraph)
+
+	- Creating an AudioProcessorGraph:
+		1) Declare the graph as a private member:
+			AudioProcessorGraph mainAudioGraph;
+		2) Somehow instantiate the graph and attach it to the AudioProcessorPlayer:
+		3) Add a processor to the graph (this is a total guess):
+			"
+			BasicAudioProcessor mainAudioProcessor = new BasicAudioProcessor();
+	        Node* tempNodePointer = graph.addNode(mainAudioProcessor, 0);
+	        if (tempNodePointer == nullptr){
+	            // Unable to add the node to the graph
+	        }
+	        "
+
+	- Creating an AudioProcessor:
+		1) Private Template fn for processing audio:
+			"
+			template <typename FloatType>
+			void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages,	AudioBuffer<FloatType>& delayBuffer);
+		2) Override public processBlock to call private process:
+			"
+			void processBlock (AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override
+    		{
+		        process (buffer, midiMessages, delayBufferDouble);
+		    }
+		    "
+		3) Need private member delayBufferDouble for creating a delay:
+    		AudioBuffer<double> delayBufferDouble;
+    	4) Private Function to createEditor:
+    		"
+    		AudioProcessorEditor* BasicAudioProcessor::createEditor(){
+    			return new BasicAudioProcessorEditor;
+    		}
+    		"
+    	5) Override the "hasEditor()" method in the header
+    		bool hasEditor() const override {return true; }
+    	6) See AudioProcessorGraph #
+
+    - Creating an AudioProcessorEditor
+    	1) See AudioProcessor #4 & #5
+
+
+------------------------------------------------
+------------------------------------------------
+
 - 07/28/17 ---
 
 Summary:
@@ -95,7 +310,7 @@ Thoughts:
 		- Inherits from AudioProcessorEditor
 	- Parameters passed back and forth between C & D using the AudioProcessorValueTreeState
 
-- Advanced JUCE Tutorial:
+- Advanced JUCE Tutorial from Feb 2013:
 	- https://artandlogic.com/2013/02/developing-audio-applications-with-juce-part-1/
 	1) The Classes that make up an Audio Application
 		A) AudioDeviceManager:
@@ -122,7 +337,7 @@ Thoughts:
 - 07/27/17 ---
 
 Summary:
-	- Tried to fix the problem from last time where float assignment cause no sound to play from the synth 
+	- Tried to fix the problem from last time where float assignment cause no sound to play from the synth
 		(float unusedFloat = 0.25f;)
 		- ended up making the temporary variable into a private member
 	- Made a working sine wave oscillator
@@ -152,13 +367,13 @@ Thoughts:
 		- store the state by using the currentPhaseAngle and the size of the change (delta)
 			- dependant on sample rate and desired frequency
 	- The Code:
-		1) Create some member variables in the header: 
+		1) Create some member variables in the header:
 			double currentSampleRate, currentAngle, angleDelta, desiredFrequency;
 		2) Write a function that updates the angleDelta
 			"
 			void updateAngleDelta(){
 		        // number of cycles necessary per each output sample, multiplied by length of sine wave cycle (2pi radians)
-		        const double cyclesPerSample = desiredFrequency / currentSampleRate;    
+		        const double cyclesPerSample = desiredFrequency / currentSampleRate;
 		        angleDelta = cyclesPerSample * 2.0 * double_Pi;
 	    	}
 			"
@@ -166,7 +381,7 @@ Thoughts:
 			"
 			currentSampleRate = sampleRate;
 			updateAngleDelta();
-			" 
+			"
 		4) Update angleDelta whenever the frequency slider is moved in the SliderValueChanged() overwriten Listener function
 			"
 		    if (slider == &frequencySlider){

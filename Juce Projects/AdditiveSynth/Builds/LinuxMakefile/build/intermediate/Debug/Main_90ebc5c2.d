@@ -467,4 +467,4 @@ build/intermediate/Debug/Main_90ebc5c2.o: ../../Source/Main.cpp \
  ../../../../../JUCE/modules/juce_opengl/utils/juce_OpenGLAppComponent.h \
  ../../../../../JUCE/modules/juce_video/juce_video.h \
  ../../../../../JUCE/modules/juce_video/capture/juce_CameraDevice.h \
- ../../Source/MainComponent.h ../../Source/UserInterface.h
+ ../../Source/MainComponent.h ../../Source/SynthForAdding.h

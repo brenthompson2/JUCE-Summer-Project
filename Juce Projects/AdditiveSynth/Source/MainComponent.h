@@ -2,7 +2,7 @@
   ==============================================================================
 
     MainComponent.h
-    Updated: 27 Jul 2017
+    Updated: 08/06/07
     Author:  Brendan Thompson
 
   ==============================================================================
@@ -11,6 +11,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "SynthForAdding.h"
 
 // Constants
 
@@ -46,14 +47,31 @@ public:
     void sliderValueChanged (Slider* slider) override;
 
 private:
+//==============================================================================
+// Private Audio Members:
+
+    float mainVolumeLevel;
+    SynthForAdding* firstSynth;
+
+//==============================================================================
+// Private UI Members:
+
+    // Rectangles
+    Rectangle<int> area;
+    TextButton header;
+    TextButton footer;
+    Rectangle<int> sidebar;
+    TextButton contentOne;
+    TextButton contentTwo;
+
+    // Sliders
+    Slider mainVolumeSlider;
+    Label mainVolumeLabel;
 
 
 //==============================================================================
 // Private Functions:
 
-
-//==============================================================================
-// Private Members:
 
     // This thing
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
