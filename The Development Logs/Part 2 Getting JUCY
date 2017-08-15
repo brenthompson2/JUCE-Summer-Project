@@ -5,6 +5,57 @@ Development Log 2: Getting JUCY
 
 This log details my experience learning to code using the JUCE framework on Ubuntu and trying to get my first plugin to build and run
 
+
+------------------------------------------------
+------------------------------------------------
+
+- 08/14/17 ---
+
+Summary:
+	- I got sick of dealing with their Audio Processing Classes
+	- I made AdditiveManual, an additive synthesizer made as just a big .cpp and a .h with everything included.
+		- UI, Synth Objects, Graph
+Thoughts:
+	- It felt amazing to just go back to my C roots and cram it out somewhat lightweight.
+	- I could definitely pass some of the functions if I created an actual Synth Object but IDK how I would process the UI elements
+		- How would the UI on the main page tell the synth what frequency the slider is at?
+		- In paint()?
+		- In the sliderValueChanged fn call the fn from the Synth Object
+
+- AdditiveManual = One large .cpp & .h that controls everything
+	1) Create a synthComponent struct:
+		// Structs
+	    struct synthComponent
+	    {
+	    	bool isActive;
+
+	    	// Volume & Frequency
+	    	Slider volumeSlider;
+	    	Label volumeLabel;
+			float volumeLevel;
+	    	Slider frequencySlider;
+	    	Label frequencyLabel;
+	    	double currentFrequency;
+
+			// Audio Synthesis Members
+		    float nextSample;
+	    	double currentAngle;
+	    	double angleDelta;
+
+	    	// UI
+	    	TextButton contentArea;
+	    };
+	2) Declare a synthArray of synthComponent:
+		synthComponent synthArray[MAX_SYNTHS];
+	3) Instantiate all the elements within the constructor
+		initSynths()
+	4) Draw the UI elements in resized()
+		- Makes me resize before drawing elements (doesn't draw originally)
+	5) Pass the audio to the synths and have them add together their output
+		generateAudio(const AudioSourceChannelInfo& bufferToFill);
+
+
+
 ------------------------------------------------
 ------------------------------------------------
 
