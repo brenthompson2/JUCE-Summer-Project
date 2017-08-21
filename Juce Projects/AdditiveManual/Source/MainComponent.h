@@ -89,8 +89,14 @@ private:
 	// Audio
 	float mainVolumeLevel;
     double currentSampleRate;
-	Random randomGen;
-	float mainNextSample;
+
+    // These definitely need to be local, temp variables within getNextAudioBlock() or generateAudio()
+    // for some unknown reason when I do assignment to a locally declared variable within the fn, it returns
+    // Probably some sort of exception
+    int synthCursor;
+    float mainNextSample;
+    Random randomGen;   // Only used when generating white noise
+
 
 	// Array of Synths
 	int numActiveSynths;

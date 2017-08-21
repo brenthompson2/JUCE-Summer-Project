@@ -5,6 +5,122 @@ Development Log 2: Getting JUCY
 
 This log details my experience learning to code using the JUCE framework on Ubuntu and trying to get my first plugin to build and run
 
+------------------------------------------------
+------------------------------------------------
+
+- 08/18/17 ---
+
+Summary:
+	- I can't declare and assign values to local temp variables inside getNextAudioBlock without it filling the audio buffer with 0's
+	- Figured out to just print variables using std::cout like normal
+	- Attempted to make the final sample equal to each individual sample * its weight, but the audio buffer is being filled with 0s
+Thoughts:
+	- this not being able to declare local temp variables thing has me questioning my existence
+
+- WHY DO VARIABLES KEEP RUINING MY OSCILLATOR!?!?!?!?!?!?!
+	- Manually setting the synths works fine
+		- synthArray[0] ..."generate"
+		- synthArray[1] ..."generate"
+	- But introducing variables breaks it
+		- int counter = 0;
+		- synthArray[counter] ..."generate"
+	- Actually, just assignment in general breaks it!!!
+		- int counter = 0;
+		- synthArray[0] ..."generate"
+	- Problem fixes if using global instead of local temp
+
+- How to do additive synthesis?
+	- synthWeight = (1 / numSynths)
+	- currentSample = sin(angle) * synthWeight
+	- finalSample = finalSample + currentSample
+	"
+ 	for (synthCursor = 0; synthCursor < numActiveSynths; synthCursor++){
+        (synthArray[synthCursor].nextSample) = (float) std::sin (synthArray[synthCursor].currentAngle);
+        (synthArray[synthCursor].nextSample) = ((synthArray[synthCursor].nextSample) * (synthArray[synthCursor].volumeLevel)) * mainVolumeLevel;
+        (synthArray[synthCursor].currentAngle) += (synthArray[synthCursor].angleDelta);
+        mainNextSample = mainNextSample + ((synthArray[synthCursor].nextSample) * (1 / numActiveSynths));
+
+    }
+    buffer[sample] = mainNextSample * mainVolumeLevel;
+	"
+	- WHY IS THIS ONLY PRODUCING 0's!?!?!?!?
+
+- How to log some debug information to the console
+	- DUHHHH
+	- Just use std::cout like normal
+
+------------------------------------------------
+------------------------------------------------
+
+- 08/17/17 ---
+
+Summary:
+	- Worked on AdditiveManual, my additive synth made "manually"
+		- One file with everything instead of utilizing oscillator objects or the special audio processing JUCE classes
+	- Having a strange error with the oscillator code
+Thoughts:
+	- This is a similar error as I had 07/24/17 when just the act of declaring an unused variables
+
+- Able to display a select number of instances of the synthComponent oscillator
+	- Keeping track of the number of active synths
+
+- Generate Audio function:
+	- For some reason I can't keep track of variables declared or given values within getNextAudioBlock() { generateAudio() }
+	- The hardcoded version of sine synthesis on one of the oscillators works fine:
+		- (synthArray[0].nextSample) = (float) std::sin (synthArray[0].currentAngle);
+		- synthArray[0].nextSample = ((synthArray[0].nextSample) * (synthArray[0].volumeLevel)) * mainVolumeLevel;
+	- Doing the same code except using an iterator doesn't work:
+		- int i = 0;
+		- (synthArray[i].nextSample) = (float) std::sin (synthArray[i].currentAngle);
+		- synthArray[i].nextSample = ((synthArray[i].nextSample) * (synthArray[i].volumeLevel)) * mainVolumeLevel;
+	"
+	- Here is the code that I am using
+		//for each channel, for each sample, for each active synth, manipulate the sample accordingly
+	    void MainContentComponent::generateAudio(const AudioSourceChannelInfo& bufferToFill){
+	        const int numChannels = bufferToFill.buffer->getNumChannels();
+	        const int numSamples = bufferToFill.numSamples;
+
+	        for (int channel = 0; channel < numChannels; channel++){
+	            float* const buffer = bufferToFill.buffer -> getWritePointer (channel, bufferToFill.startSample);
+	            float newSample;
+
+	            for (int sample; sample < numSamples; sample++){
+	                // Hardcoded White Noise
+	                // (synthArray[0].nextSample) = (randomGen.nextFloat() * 2.0f - 1.0f);
+
+	                // Hardcoded Sine Wave
+	                (synthArray[0].nextSample) = (float) std::sin (synthArray[0].currentAngle);
+	                (synthArray[0].currentAngle) += (synthArray[0].angleDelta);
+	                (synthArray[0].nextSample) = ((synthArray[0].nextSample) * (synthArray[0].volumeLevel)) * mainVolumeLevel;
+	                buffer[sample] = (synthArray[0].nextSample);
+
+	                // Less Hardcoded Sine Wave ***** FAILS HERE!?!?!?!?
+	                // int synthCursor = 0;
+	                // (synthArray[synthCursor].nextSample) = (float) std::sin (synthArray[synthCursor].currentAngle);
+	                // (synthArray[synthCursor].currentAngle) += (synthArray[synthCursor].angleDelta);
+	                // (synthArray[synthCursor].nextSample) = ((synthArray[synthCursor].nextSample) * (synthArray[synthCursor].volumeLevel)) * mainVolumeLevel;
+	                // buffer[sample] = (synthArray[synthCursor].nextSample);
+
+	                // Dynamic Sine Waves   *** Doesn't Work ***
+	                // buffer[sample] = 0.0f;
+	                // for (int i = 0; i < 1; i++){
+	                //     (synthArray[i].nextSample) = (float) std::sin (synthArray[i].currentAngle);
+	                //     (synthArray[i].currentAngle) += (synthArray[i].angleDelta);
+	                //     (synthArray[i].nextSample) = ((synthArray[i].nextSample) * (synthArray[i].volumeLevel)) * mainVolumeLevel;
+	                //     buffer[sample] = (synthArray[i].nextSample);
+	                // }
+	            }
+        }
+    "
+    - This is the same error I had on 07/24/17
+    "
+		- This Works:
+            buffer[sample] = (randomGen.nextFloat() * 0.25f - 0.125f);
+		- This Doesn't Work:
+			float newValue = (randomGen.nextFloat() * 0.25f - 0.125f);
+            buffer[sample] = newValue;
+    "
+    - I worked around this last time by removing temps or making them global
 
 ------------------------------------------------
 ------------------------------------------------
@@ -45,15 +161,15 @@ Thoughts:
 	    	// UI
 	    	TextButton contentArea;
 	    };
-	2) Declare a synthArray of synthComponent:
+	2) Declare a synthArray of type synthComponent:
 		synthComponent synthArray[MAX_SYNTHS];
 	3) Instantiate all the elements within the constructor
-		initSynths()
+		initSynths();
 	4) Draw the UI elements in resized()
-		- Makes me resize before drawing elements (doesn't draw originally)
+		- When running, must resize before drawing elements (doesn't draw originally)
+		- Have to change frequency before playing sound
 	5) Pass the audio to the synths and have them add together their output
 		generateAudio(const AudioSourceChannelInfo& bufferToFill);
-
 
 
 ------------------------------------------------

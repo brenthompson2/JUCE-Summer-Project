@@ -19,7 +19,7 @@
     :
         currentSampleRate (0.0),
         mainVolumeLevel(0.25),
-        numActiveSynths(1)
+        numActiveSynths(2)
     {
         setSize (800, 600);
         // specify the number of input and output channels that we want to open
@@ -155,7 +155,7 @@
         for (int i = 0; i < MAX_SYNTHS; i++){
 
             // Audio
-            (synthArray[i].currentFrequency) = 500.0;
+            (synthArray[i].currentFrequency) = 500.0f;
             (synthArray[i].volumeLevel) = 0.25;
             (synthArray[i].currentAngle) = 0.0;
             (synthArray[i].angleDelta) = 0.0;
@@ -201,33 +201,49 @@
 
         for (int channel = 0; channel < numChannels; channel++){
             float* const buffer = bufferToFill.buffer -> getWritePointer (channel, bufferToFill.startSample);
-            float newSample;
 
             for (int sample; sample < numSamples; sample++){
+                mainNextSample = 0;
                 // Hardcoded White Noise
                 // (synthArray[0].nextSample) = (randomGen.nextFloat() * 2.0f - 1.0f);
+                // buffer[sample] = (synthArray[0].nextSample);
+
 
                 // Hardcoded Sine Wave
-                (synthArray[0].nextSample) = (float) std::sin (synthArray[0].currentAngle);
-                (synthArray[0].currentAngle) += (synthArray[0].angleDelta);
-                (synthArray[0].nextSample) = ((synthArray[0].nextSample) * (synthArray[0].volumeLevel)) * mainVolumeLevel;
-                buffer[sample] = (synthArray[0].nextSample);
+                // (synthArray[0].nextSample) = (float) std::sin (synthArray[0].currentAngle);
+                // (synthArray[0].nextSample) = ((synthArray[0].nextSample) * (synthArray[0].volumeLevel)) * mainVolumeLevel;
+                // buffer[sample] = (synthArray[0].nextSample);
+                // (synthArray[0].currentAngle) += (synthArray[0].angleDelta);
 
-                // Less Hardcoded Sine Wave ***** FAILS HERE!?!?!?!?
+                // Less Hardcoded Sine Wave *** FAILS HERE!?!?!?!? ***
                 // int synthCursor = 0;
                 // (synthArray[synthCursor].nextSample) = (float) std::sin (synthArray[synthCursor].currentAngle);
-                // (synthArray[synthCursor].currentAngle) += (synthArray[synthCursor].angleDelta);
                 // (synthArray[synthCursor].nextSample) = ((synthArray[synthCursor].nextSample) * (synthArray[synthCursor].volumeLevel)) * mainVolumeLevel;
                 // buffer[sample] = (synthArray[synthCursor].nextSample);
+                // (synthArray[synthCursor].currentAngle) += (synthArray[synthCursor].angleDelta);
 
-                // Dynamic Sine Waves
-                // buffer[sample] = 0.0f;
-                // for (int i = 0; i < 1; i++){
-                //     (synthArray[i].nextSample) = (float) std::sin (synthArray[i].currentAngle);
-                //     (synthArray[i].currentAngle) += (synthArray[i].angleDelta);
-                //     (synthArray[i].nextSample) = ((synthArray[i].nextSample) * (synthArray[i].volumeLevel)) * mainVolumeLevel;
-                //     buffer[sample] = (synthArray[i].nextSample);
+                // Additive Syntheses    with some global member variables that should be local temps (synthCursor, mainNextSample, randomGen)
+                // mainSample = mainSample + (sin(angle) * volume * weight)     // weight = (1 / numActiveSynths)
+                for (synthCursor = 0; synthCursor < numActiveSynths; synthCursor++){
+                    (synthArray[synthCursor].nextSample) = (float) std::sin (synthArray[synthCursor].currentAngle);
+                    (synthArray[synthCursor].nextSample) = ((synthArray[synthCursor].nextSample) * (synthArray[synthCursor].volumeLevel)) * mainVolumeLevel;
+                    (synthArray[synthCursor].currentAngle) += (synthArray[synthCursor].angleDelta);
+                    mainNextSample = mainNextSample + ((synthArray[synthCursor].nextSample) * (1 / numActiveSynths));
+
+                }
+                buffer[sample] = mainNextSample * mainVolumeLevel;
+
+
+
+
+
+                // //     // (synthArray[synthCursor].nextSample) = ((synthArray[synthCursor].nextSample) * (synthArray[synthCursor].volumeLevel) * (1 / numActiveSynths));
                 // }
+
+
+
+
+                if (!(sample % 50)) std::cout << buffer[sample] << std::endl;   // print every 50 samples
             }
         }
     }
