@@ -26,10 +26,8 @@ and also Serum which is by Xfer Records.
 
 			- Current Status - 07/24/17 ---
 			
-- After struggling for a month trying to get both WDL-OL and JUCE plugins to build with Visual Studio 2017 on Windows 10
-	I switched to using JUCE on Ubuntu without any problems
-- In order to curb my desire to code while struggling to install everything, I took notes over a bunch of different tutorials
-	in areas including: Audio Programming, Advanced C++, and JUCE Development
+- After struggling for a month trying to get both WDL-OL and JUCE plugins to build with Visual Studio 2017 on Windows 10 I switched to using JUCE on Ubuntu without any problems
+- In order to curb my desire to code while struggling to install everything, I took notes over a bunch of different tutorials	in areas including: Audio Programming, Advanced C++, and JUCE Development
 - I am now finally beginning to build my first synthesizer
 - I just created some files, re-organized the project, and built it successfully
 - Now I am working to produce my first sound with an Oscillator producing white noise

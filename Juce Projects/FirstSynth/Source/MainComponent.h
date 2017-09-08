@@ -76,7 +76,6 @@ private:
 	// General Synthesis
 	Random randomGen;
 	float volumeLevel;
-    float nextSample;
 
 	// Sine Wave Synthesis
     double currentSampleRate, currentAngle, angleDelta, currentFrequency;

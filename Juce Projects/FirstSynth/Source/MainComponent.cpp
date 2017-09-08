@@ -86,13 +86,17 @@
     {
         const int numChannels = bufferToFill.buffer->getNumChannels();
         const int numSamples = bufferToFill.numSamples;
+        double originalAngle = currentAngle;
         for (int channel = 0; channel < numChannels; channel++){
             float* const buffer = bufferToFill.buffer -> getWritePointer (channel, bufferToFill.startSample);
-            for (int sample; sample < numSamples; sample++){
+            currentAngle = originalAngle;
+            updateAngleDelta();
+            for (int sample = 0; sample < numSamples; sample++){
                 // nextSample = (randomGen.nextFloat() * 2.0f - 1.0f); // For Randomly generated White Noise
-                nextSample = (float) std::sin (currentAngle);
+                const float nextSample = (float) std::sin (currentAngle);
                 currentAngle += angleDelta;
                 buffer[sample] = nextSample * volumeLevel;
+                if (!(sample % 100)) { std::cout << buffer[sample] << std::endl;}
             }
         }
     }

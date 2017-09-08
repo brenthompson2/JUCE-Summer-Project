@@ -59,7 +59,7 @@
         <MODULEPATH id="juce_audio_utils" path="../../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wall">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="AdditiveManual"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="AdditiveManual"/>

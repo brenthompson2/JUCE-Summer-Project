@@ -3,7 +3,257 @@ Development Log 2: Getting JUCY
 
 - Overview ---
 
-This log details my experience learning to code using the JUCE framework on Ubuntu and trying to get my first plugin to build and run
+This log details my experience learning to code using the JUCE framework on Ubuntu
+
+------------------------------------------------
+------------------------------------------------
+
+- 08/27/17 ---
+
+Summary:
+	- I figured out how to get compiler warnings with JUCE
+		- In the Projucer edit the Linux Makefile Exporter setting in the Files Tab
+	- The Harmonic Synth was neat, but I'm gonna make a chord machine that generates chords
+Thoughts:
+	-
+
+- Harmonic Synth:
+	- outputs the harmonic series (1/1, 1/2, 1/3, 1/4, 1/5, etc.)
+		- It doesn't sound very good, probably because of the velocities and phases don't scale
+		- Also, I am getting a lot of artifacts that are making it sound pretty distorted
+	- Edited the synth to output the series (1/1, 1/2, 1/4, 1/8, 1/16, etc.)
+		- Also sounds nasty, I think mostly because of the artifacts, not because of the musical principles
+	- The timbre on instruments is made up of very alternating frequencies, velocities, and phases
+		- this harmonic synth thing isn't getting anywhere, mainly because I can't find any recipes for the timber of the instruments
+
+- Fixing Artifacts in FirstSynth:
+	- The problem: there is an original angleDelta that gets manipulated for each sample for one channel and needs to get reset before setting the other channel
+	- Solution: store the originalAngleDelta and re-call updateAngleDelta()
+
+- Bringing my fix to Additive Manual:
+	- add new double to synth struct lastAngle;
+	- before doing either channel, save all of the lastAngle
+	- for each channel, reload all currentAngle & updateAngleDelta
+	- Also, I rewrote updateAngleDelta to take in a frequency and return an angle delta
+
+- Bringing my fix to HarmonicSynthesizer:
+	- Pretty much same as AdditiveManual
+
+- Handling Midi JUCE tutorial: https://www.juce.com/doc/tutorial_handling_midi_events
+	1) Add a bunch of members:
+		"
+	    AudioDeviceManager deviceManager;
+	    ComboBox midiInputList;
+	    Label midiInputListLabel;
+	    int lastInputIndex;
+	    bool isAddingFromMidiInput;
+
+	    MidiKeyboardState keyboardState;
+	    MidiKeyboardComponent keyboardComponent;
+
+	    TextEditor midiMessagesBox;
+	    double startTime;
+		"
+	2) Initialize some things:
+		"
+	    MainContentComponent()
+	    :   lastInputIndex (0),
+	        isAddingFromMidiInput (false),
+	        keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard),
+	        startTime (Time.getMillisecondCounterHiRes() * 0.001);
+		"
+	3)	Set up the Midi Input List:
+		- In MainContentComponent():
+			"
+	        addAndMakeVisible (midiInputListLabel);
+	        midiInputListLabel.setText ("Midi Input", dontSendNotification);
+	        midiInputListLabel.attachToComponent (&midiInputList, true);
+
+	        addAndMakeVisible (midiInputList);
+	        midiInputList.setTextWhenNoChoicesAvailable ("No MIDI Inputs Enabled");
+	        const StringArray midiInputs (MidiInput::getDevices());
+	        midiInputList.addItemList (midiInputs, 1);
+	        midiInputList.addListener (this);
+
+	        // Use first enabled device as default
+	        for (int i = 0; i < midiInputs.size(); i++){
+	            if (deviceManager.isMidiInputEnabled (midiInputs[i])){
+	                setMidiInput(i);
+	                break;
+	            }
+	        }
+
+	        // If no midi devices enabled, use the first one
+	        if (midiInputList.getSelectedId() == 0)
+	            setMidiInput(0);
+            "
+        - override comboBoxChanged():
+        	"
+			void comboBoxChanged (ComboBox* box) override{
+		        if (box == &midiInputList){
+		            setMidiInput (midiInputList.getSelectedIndexItem());
+		        }
+		    }
+        	"
+        - setMidiInput() starts listening to selected device:
+        	"
+			void setMidiInput(int index){
+		        const StringArray list (MidiInput::getDevices());
+
+		        deviceManager.removeMidiInputCallback (list[lastInputIndex], this);
+
+		        cont String newInput (list[index]);
+
+		        if (! deviceManager.isMidiInputEnabled(newInput)){
+		            deviceManager.SetMidiInputEnabled(newInput, true);
+		        }
+
+		        deviceManager.addMidiInputCallback(nwInput, this);
+		        midiInputList.setSelectedId (index + 1, dontSendNotification);
+
+		        lastInputIndex = index;
+		    }
+        	"
+    5) Handle Midi Input:
+	    - Handle Incoming Messages:
+	    	"
+	    	void handleIncomingMidiMessage (MidiInput* source, const MidiMessage* message) override{
+		        const ScopedValueSetter<bool> scopedInputFlag (isAddingFromMidiInput, true);
+		        keyboardState.processNextMidiEvent (message);
+		        postMessageToList(message, source->getName());
+		    }
+	    	"
+	    - add the keyboard to the constructor:
+	    	"
+	    	addAndMakeVisible (keyboardComponent);
+	        keyboardState.addListener(this);
+	    	"
+	    - Override Handling note on and off for the on screen keyboard:
+	    	"
+	    	void handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override{
+		        if (! isAddingFromMidiInput){
+		            MidiMessage m (MidiMessage::noteOn (midiChannel, midiNoteNumber, velocity));
+		            m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
+		            postMessageToList (m, "On-Screen Keyboard");
+		        }
+		    }
+
+		    void handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override{
+		        if (! isAddingFromMidiInput){
+		            MidiMessage m (MidiMessage::noteOff (midiChannel, midiNoteNumber));
+		            m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
+		            postMessageToList (m, "On-Screen Keyboard");
+		        }
+		    }
+	    	"
+	6) Post the message to the list
+		- IncomingMessageCallback is subclass of CallbackMessages
+			- ensures calling of function from message thread
+		"
+		void postMessageToList (const MidiMessage& message, const String& source){
+	        (new IncomingMessageCallback (this, message, source))->post();
+	    }
+		"
+	7) Display the message:
+		"
+		void addMessageToList(const MidiMessage& message, const String& source){
+	        const double time = message.getTimeStamp() - startTime;
+	        const int hours = ((int) (time / 3600.0)) % 24;
+	        const int minutes = ((int) (time / 60.0)) % 60;
+	        const int seconds = ((int) time) % 60;
+	        const int millis = ((int) (time * 1000.0)) % 1000;
+
+	        const String timecode (String::formatted ("%02d:%02d:%02d.%03d", hours, minutes, seconds, millis));
+	        const String description (getMidiMessageDescription (message));
+	        const String midiMessageString (timecode + " - " + description + " (" + source + ")");
+	        logMessage (midiMessageString);
+	    }
+		"
+	8) Get the information:
+		"
+		static String getMidiMessageDescription (const MidiMessage& m){
+			static String getMidiMessageDescription (const MidiMessage& m){
+	        if (m.isNoteOn())           return "Note on " + MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
+	        if (m.isNoteOff())          return "Note off " + MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
+	        if (m.isProgramChange)      return "Program change " + String (m.getProgramChangeNumber());
+	        if (m.isPitchWheel())       return "Pitch wheel " + String (m.getPitchWheelValue());
+	        if (m.isAftertouch())       return "After touch " + MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3) + ": " + String (m.getAfterTouchValue());
+	        if (m.isChannelPressure())  return "Channel pressure " + String (m.getChannelPressureValue());
+	        if (m.isAllNotesOff())      return "All notes off";
+	        if (m.isAllSoundOff())      return "All sound off";
+	        if (m.isMetaEvent())        return "Meta event";
+
+	        if (m.isController()){
+	            String name (MidiMessage::getControllerName (m.getControllerNumber()));
+	            if (name.isEmpty())
+	                name = "[" + String (m.getControllerNumber()) + "]";
+
+	            return "Controller " + name + ": " + String (m.getControlerValue());
+	        }
+
+	        return String::toHexString (m.getRawData(), m.getRawDataSize());
+	    }
+		"
+	9) Destructor:
+		"
+		keyboardState.removeListener (this);
+        deviceManager.removeMidiInputCallback (MidiInput::getDevices()[midiInputList.getSelectedItemIndex()], this);
+        midiInputListener (this);
+        "
+
+
+
+- I am going to attempt to make a chord machine, which will take the fundamental and then produce chords based off it
+	- Maybe I will make it possible to choose the chord (Major, Minor, dominant 7th, etc.)
+
+------------------------------------------------
+------------------------------------------------
+
+- 08/25/17 ---
+
+Summary:
+	- I've fixed the unable to initialize locals & the only using one channel issue: sample was undeclared
+		- https://stackoverflow.com/questions/45787191/assignment-of-local-variables-causes-audio-to-stop-processing-in-juce
+Thoughts:
+	- Holy crap I wish I could have gotten a damn "uninitialized variable" warning from the compiler
+
+- Unable to get warnings:
+	- make -Wall	=	nothing
+	- make V=1	=	verbose but still no warning
+	- changing live build settings	=	live build doesn't work on Ubuntu
+
+
+------------------------------------------------
+------------------------------------------------
+
+- 08/24/17 ---
+
+Summary:
+	- Created Harmonic Synth as a copy of AdditiveManual
+Thoughts:
+	- With Harmonic Synth I hope to pick a frequency and then have it automatically produce the first X harmonics.
+		- Will be able to chose which harmonics to include in toggle manner very similar to Additive Manual
+	- Still need to:
+		- Get audio to come out of both channels again
+		- Separate some of the code into its own classes/objects
+			- The problem is IDK how the other files will communicate with the UI/listeners/parameters with or without the JUCE audio processing classes
+
+------------------------------------------------
+------------------------------------------------
+
+- 08/21/17 ---
+
+Summary:
+	- I have a working additive synth!!!
+Thoughts:
+Research:
+	- There is a synthesizer class that manages voices and more https://www.juce.com/doc/classSynthesiser
+		- also used https://github.com/WeAreROLI/JUCE/blob/master/examples/Demo/Source/Demos/AUdioSynthesizerDemo.cpp
+	- Sine, Saw, Triangle, and Square: https://github.com/nathanshaw/synth_monster/blob/master/Source/OscVoice.cpp
+	- Create ProcessorEditor: https://github.com/nathanshaw/synth_monster/blob/master/Source/PluginProcessor.cpp
+
+- Working additive synth!
+	- Except only outputting to the left channel
 
 ------------------------------------------------
 ------------------------------------------------
@@ -44,9 +294,9 @@ Thoughts:
     buffer[sample] = mainNextSample * mainVolumeLevel;
 	"
 	- WHY IS THIS ONLY PRODUCING 0's!?!?!?!?
+		- (1 / numActiveSynths) produces 0 because of ints not floats
 
 - How to log some debug information to the console
-	- DUHHHH
 	- Just use std::cout like normal
 
 ------------------------------------------------
@@ -720,20 +970,3 @@ Thoughts:
 - Let's Code!
 - I am going to start by following along with the 6th tutorial by The Audio Programmer
 	- This was the last tutorial in the series, some decent beginner work, but I still don't know anything about manipulating the Audio Buffer
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

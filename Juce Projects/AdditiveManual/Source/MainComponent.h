@@ -2,7 +2,7 @@
   ==============================================================================
 
     MainComponent.h
-    Updated: 08/13/17
+    Updated: 08/21/17
     Author:  Brendan Thompson
 
   ==============================================================================
@@ -17,11 +17,13 @@
     const float MIN_FREQUENCY = 50.0f;
     const float MAX_FREQUENCY = 5000.0f;
     const int MAX_SYNTHS = 10;
+    const int MAX_SAMPLES_PER_BLOCK = 501;
 
 // Structs
     struct synthComponent
     {
     	bool isActive;
+        ToggleButton btnIsActive;
 
     	// Volume & Frequency
     	Slider volumeSlider;
@@ -34,11 +36,14 @@
 		// Audio Synthesis Members
 	    float nextSample;
     	double currentAngle;
+        double lastAngle;
     	double angleDelta;
 
     	// UI
+        Rectangle<int> toggleBtnArea;
     	Rectangle<int> volumeArea;
     	Rectangle<int> frequencyArea;
+
     };
 
 class MainContentComponent   : public AudioAppComponent,
@@ -72,35 +77,19 @@ public:
 
 private:
 
-
 //==============================================================================
-// Private Audio Functions:
+// Private Audio Members:
 
-	void initSynths();
-
-	void generateAudio(const AudioSourceChannelInfo& bufferToFill);
-
-	void updateAngleDelta();
-
-
-//==============================================================================
-// Private Members:
-
-	// Audio
-	float mainVolumeLevel;
+    // Audio
     double currentSampleRate;
+    float mainVolumeLevel;
 
-    // These definitely need to be local, temp variables within getNextAudioBlock() or generateAudio()
-    // for some unknown reason when I do assignment to a locally declared variable within the fn, it returns
-    // Probably some sort of exception
-    int synthCursor;
-    float mainNextSample;
-    Random randomGen;   // Only used when generating white noise
+    // Array of Synths
+    int numActiveSynths;
+    synthComponent synthArray[MAX_SYNTHS];
 
-
-	// Array of Synths
-	int numActiveSynths;
-	synthComponent synthArray[MAX_SYNTHS];
+//==============================================================================
+// Private UI Members:
 
     // Rectangles
     TextButton header;
@@ -111,6 +100,24 @@ private:
     Slider mainVolumeSlider;
     Label mainVolumeLabel;
 
-    // This thing
+
+//==============================================================================
+// Private Audio Functions:
+
+	void initSynths();
+
+	void generateAudio(const AudioSourceChannelInfo& bufferToFill);
+
+    // getUpdatedAngleDelta = returns the degree of change necessary to create a sine wave in one cycle given the desired frequency
+	double getUpdatedAngleDelta(double frequency);
+
+
+//==============================================================================
+// Private UI Functions:
+
+    void initUI();
+
+//==============================================================================
+// This thing
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };
