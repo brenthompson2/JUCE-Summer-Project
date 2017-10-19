@@ -8,7 +8,7 @@ README.md
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-			- Overview ---
+# Overview
 			
 For the summer of 2017 I wanted to look into developing a software synthesizer, possibly one that could be loaded as a VST plugin into music production software such as a Digital Audio Workstation (DAW). I decided to use JUICE for a few reasons, mainly becuase it focuses on code as opposed to virtual hardware and it appeared to have a pretty legitimate and large user base. However, attempting to get further into the nuts and bolts passed the tutorials quickly became quite challenging. In the end I gained a much better understanding of C++, gained a huge appreciation for how elaborate Audio software is, realized how complicated Synthesizers are, and created some neat applications. The last one I was able to do before school starting back up was an Additive Synthesizer with automatically Harmonized, yet toggle-able, harmonics.
 
@@ -22,7 +22,7 @@ As quickly as it came the summer ended, leaving me with a million more questions
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-			- Current Status - 10/19/17 ---
+# Projects
 			
 - Chord Machine:
 	- Barely got started
@@ -75,7 +75,7 @@ As quickly as it came the summer ended, leaving me with a million more questions
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-			- The Development Logs ---
+# Development Logs
 			
 There are a few reasons that I created the detailed logs:
 	- It serves as a guide in case I ever need to redo any of the processes
