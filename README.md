@@ -78,6 +78,7 @@ As quickly as it came the summer ended, leaving me with a million more questions
 # Development Logs
 			
 There are a few reasons that I created the detailed logs:
+
 	- It serves as a guide in case I ever need to redo any of the processes
 	- It is a notebook to review and reference while producing audio software
 	- There are summaries of research such as articles, tutorials, and videos that I can always reference
